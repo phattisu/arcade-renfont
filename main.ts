@@ -168,10 +168,11 @@ namespace RenFont {
         let bufv = pins.createBuffer(uimg.height), count = [], i = 0, x0 = 0, x1 = imgi.width, y0 = 0, y1 = imgi.height
         for (let x = 0; x < uimg.width; x += i) {
             count = []
-            for (i = 0; x + i < uimg.width; i++) {
+            let founded = true
+            for (i = 0; founded || x + i < uimg.width; i++) {
                 uimg.getRows(x + i, bufv)
                 count.push(bufv.toArray(NumberFormat.UInt8LE).filter(val => ((val == mcol || val == ncol) || val == scol)).length)
-                if ((stop && (count[i - 1] > 0 && count[i] <= 0)) || (!stop && (start && count[i] <= 0) || (!start && count[i] > 0))) break;
+                founded = !((stop && (count[i - 1] > 0 && count[i] <= 0)) || (!stop && (start && count[i] <= 0) || (!start && count[i] > 0)))
             }
             if (start) {
                 if (stop) {
