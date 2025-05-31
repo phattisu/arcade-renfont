@@ -1,5 +1,5 @@
-// meta={"simUrl":"https://trg-arcade.userpxt.io/v2.0.56/---simulator","cdnUrl":"https://cdn.makecode.com","version":"0.0.1","target":"arcade","targetVersion":"2.0.56","repo":"phattisu/arcade-renfont"}
-// total=1642463 new=28.89% cached=66.80% other=4.31%
+// meta={"simUrl":"https://trg-arcade.userpxt.io/v2.0.56/---simulator","cdnUrl":"https://cdn.makecode.com","version":"0.0.2","target":"arcade","targetVersion":"2.0.56","repo":"phattisu/arcade-renfont"}
+// total=1642483 new=28.89% cached=66.80% other=4.31%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -428,7 +428,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P69185(s) {
+function _main___P195968(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -828,27 +828,27 @@ switch (step) {
     r0 = s.retval;
     r0 = pxsim_pxtrt.mkMap();
     globals.cidk___23636 = (r0);
-    s.tmp_0 = RenFontTable_create__P64730_mk(s);
+    s.tmp_0 = RenFontTable_create__P190575_mk(s);
     s.callLocIdx = 63; s.pc = 37; return s.tmp_0;
   case 37:
     r0 = s.retval;
-    globals.myMember___64738 = (r0);
+    globals.myMember___190583 = (r0);
     s.tmp_0 = SpriteKind_create__P20094_mk(s);
     s.callLocIdx = 64; s.pc = 38; return s.tmp_0;
   case 38:
     r0 = s.retval;
-    globals.renfontSprite___64741 = (r0);
+    globals.renfontSprite___190586 = (r0);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P69185.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"main.ts","functionName":"<main>","argumentNames":[]}
-_main___P69185.continuations = [  ]
+_main___P195968.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"main.ts","functionName":"<main>","argumentNames":[]}
+_main___P195968.continuations = [  ]
 
-function _main___P69185_mk(s) {
+function _main___P195968_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P69185, depth: s.depth + 1,
+        parent: s, fn: _main___P195968, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1387,7 +1387,7 @@ function gameOverConfig_inline__P20634_mk(s) {
 
 
 
-function RenFontTable_create__P64730(s) {
+function RenFontTable_create__P190575(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1397,28 +1397,28 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0) || runtime !== pxsim.runtime) re
 switch (step) {
   case 0:
 
-    r0 = pxsim_numops_toBoolDecr(globals.kindid___64729);
+    r0 = pxsim_numops_toBoolDecr(globals.kindid___190574);
     s.tmp_1 = r0;
     r0 = pxsim_Boolean__bang(s.tmp_1);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 1; continue; }
-    globals.kindid___64729 = (0);
+    globals.kindid___190574 = (0);
   case 1:
   case 2:
-    s.tmp_0 = r0 = globals.kindid___64729;
+    s.tmp_0 = r0 = globals.kindid___190574;
     r0 = (s.tmp_0 + 1);
-    globals.kindid___64729 = (r0);
+    globals.kindid___190574 = (r0);
     r0 = s.tmp_0;
     return leave(s, r0)
   default: oops()
 } } }
-RenFontTable_create__P64730.info = {"start":55,"length":90,"line":4,"column":4,"endLine":7,"endColumn":5,"fileName":"main.ts","functionName":"create","argumentNames":[]}
+RenFontTable_create__P190575.info = {"start":55,"length":90,"line":4,"column":4,"endLine":7,"endColumn":5,"fileName":"main.ts","functionName":"create","argumentNames":[]}
 
-function RenFontTable_create__P64730_mk(s) {
+function RenFontTable_create__P190575_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: RenFontTable_create__P64730, depth: s.depth + 1,
+        parent: s, fn: RenFontTable_create__P190575, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -42109,7 +42109,7 @@ const tiles_Location__C20358_VT = mkVTable({
   },
 });
 
-const breakpoints = setupDebugger(1, ["cidk___23636","myMember___64738","renfontSprite___64741","kindid___64729"])
+const breakpoints = setupDebugger(1, ["cidk___23636","myMember___190583","renfontSprite___190586","kindid___190574"])
 
-return _main___P69185
+return _main___P195968
 })
