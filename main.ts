@@ -144,8 +144,6 @@ namespace RenFont {
     //%block="$kind"
     //%kindNamespace=RenFontTable
     //%kindPromptHint="enter your font name here"
-    //%name.fieldEditor="autocomplete" name.fieldOptions.decompileLiterals=true
-    //%name.fieldOptions.key="tablenameshadow"
     export function _tableNameShadow(kind: number) {
         return kind
     }
@@ -155,7 +153,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setcharecter
     //%block="set |table id $gid and set letter $glyph to img $imgi=screen_image_picker||and |the letter can move? $notmove and stay on or under the letter? $onthechar and substract width $inchar erase col $bcol spacebar col $scol base col $mcol guard col $ncol"
-    //%gid.shadow=renfont_tablenameshadow gid.defl="fonttemp"
+    //%gid.shadow=renfont_tablenameshadow
     //%bcol.shadow=colorindexpicker
     //%scol.shadow=colorindexpicker
     //%mcol.shadow=colorindexpicker
@@ -281,7 +279,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setcharfromimgsheet
     //%block="set |table id $tid and set img sheet $PngSheet=screen_image_picker with letters $GroupChar||and |staying letters $StayChar letters on the letters $CharOnChar and Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
-    //%tid.shadow=renfont_tablenameshadow tid.defl="fonttemp"
+    //%tid.shadow=renfont_tablenameshadow
     //%bcl.shadow=colorindexpicker
     //%scl.shadow=colorindexpicker
     //%mcl.shadow=colorindexpicker
@@ -302,7 +300,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setchararrfromimgsheet
     //%block="set |table id $tid and set img sheet $PngSheet=screen_image_picker with array of letters $GroupChar||and | array of staying letters $StayChar array of letters on the letters $CharOnChar and array of Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
-    //%tid.shadow=renfont_tablenameshadow tid.defl="fonttemp"
+    //%tid.shadow=renfont_tablenameshadow
     //%bcl.shadow=colorindexpicker
     //%scl.shadow=colorindexpicker
     //%mcl.shadow=colorindexpicker
@@ -322,7 +320,7 @@ namespace RenFont {
      */
     //%blockid=renfont_numofglyphs
     //%block="number of glyphs in table id $gid"
-    //%gid.shadow=renfont_tablenameshadow gid.defl="fonttemp"
+    //%gid.shadow=renfont_tablenameshadow
     //%group="datainfo"
     //%weight=2
     export function NumOfGlyphs(gid: number): number {
@@ -336,7 +334,7 @@ namespace RenFont {
      */
     //%blockid=renfont_arrofgypimg
     //%block="array of glyph images in table id $gid"
-    //%gid.shadow=renfont_tablenameshadow gid.defl="fonttemp"
+    //%gid.shadow=renfont_tablenameshadow
     //%group="datainfo"
     //%weight=4
     export function ImageArray(gid: number): Image[] {
@@ -350,7 +348,7 @@ namespace RenFont {
      */
     //%blockid=renfont_arrofglyphs
     //%block="array of glyphs in table id $gid"
-    //%gid.shadow=renfont_tablenameshadow gid.defl="fonttemp"
+    //%gid.shadow=renfont_tablenameshadow
     //%group="datainfo"
     //%weight=6
     export function GlyphArray(gid: number): String[] {
@@ -598,7 +596,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setimgfromtext
     //%block="create the image of |text $input in page width $iwidt from table id $tid||and |fill col $icol with outline $bcol and got alignment $alm gapwidth $spacew lineheight $lineh"
-    //%tid.shadow=renfont_tablenameshadow tid.defl="fonttemp"
+    //%tid.shadow=renfont_tablenameshadow
     //%alm.min=-1 alm.max=1 alm.defl=0
     //%icol.shadow=colorindexpicker
     //%bcol.shadow=colorindexpicker
@@ -615,7 +613,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setimgframefromtext
     //%block="create the image frame of |text $input in page width $iwidt from table id $tid||and |fill col $icol with outline $bcol and got alignment $alm gapwidth $spacew lineheight $lineh"
-    //%tid.shadow=renfont_tablenameshadow tid.defl="fonttemp"
+    //%tid.shadow=renfont_tablenameshadow
     //%alm.min=-1 alm.max=1 alm.defl=0
     //%icol.shadow=colorindexpicker
     //%bcol.shadow=colorindexpicker
@@ -632,7 +630,7 @@ namespace RenFont {
      */
     //%blockid=renfont_stamptexttoframe
     //%block="StampStrImgToTheDialogFrame $Fimg=dialog_image_picker Text $Txt Text width $Wval TableId $arrid||And text color col $ucol and outline $bcol Alignment $ualm gapwidth $spacew lineheight $lineh"
-    //%arrid.shadow=renfont_tablenameshadow arrid.defl="fonttemp"
+    //%arrid.shadow=renfont_tablenameshadow
     //%ualm.min=-1 ualm.max=1 ualm.defl=0
     //%ucol.shadow=colorindexpicker
     //%bcol.shadow=colorindexpicker
@@ -656,7 +654,7 @@ namespace RenFont {
      */
     //%blockid=renfont_stamptextarrtoframe
     //%block="StampStrAnimToDialogFrame $Fimg=dialog_image_picker Text input $Txt In text width $Wval At table id $arrid||and text color $ucol with outline $bcol And alignment $ualm gapwidth $spacew lineheight $lineh"
-    //%arrid.shadow=renfont_tablenameshadow arrid.defl="fonttemp"
+    //%arrid.shadow=renfont_tablenameshadow
     //%ualm.min=-1 ualm.max=1 ualm.defl=0
     //%ucol.shadow=colorindexpicker
     //%bcol.shadow=colorindexpicker
@@ -693,7 +691,7 @@ namespace RenFont {
      */
     //%blockid=renfont_changeletterspacing
     //%block="change letter spacing by $input"
-    //%group="modify"
+    //%group="property"
     //%weight=6
     export function ChangeSpace(input: number) {
         letterspace += input
@@ -704,7 +702,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setlinegap
     //%block="set line gap by $input"
-    //%group="modify"
+    //%group="property"
     //%weight=4
     export function SetLine(input: number) {
         lineheight = input
@@ -715,7 +713,7 @@ namespace RenFont {
      */
     //%blockid=renfont_changelinegap
     //%block="change line gap by $input"
-    //%group="modify"
+    //%group="property"
     //%weight=2
     export function ChangeLine(input: number) {
         lineheight += input
@@ -728,7 +726,7 @@ namespace RenFont {
      */
     //%blockid=renfont_getalignmentval
     //%block="get $alg of alignment"
-    //%group="modify"
+    //%group="property"
     export function getAlign(alg: align) {
         return alg
     }
@@ -746,18 +744,9 @@ namespace RenFont {
     //%weight=10
     export function SetupPresetFont(tempf: tempfont, tid: number) {
         switch (tempf) {
-            case 1:
-                _mainfont(tid)
-                break;
-            case 2:
-                _arcadefont(tid)
-                break;
-            case 3:
-                _latinmini(tid)
-                break;
-            default:
-                _mainfont(tid)
-                break;
+            case 1: default: _mainfont(tid); break;
+            case 2: _arcadefont(tid); break;
+            case 3: _latinmini(tid); break;
         }
     }
 
