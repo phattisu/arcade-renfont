@@ -684,7 +684,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setletterspacing
     //%block="set letter spacing to $input"
-    //%group="modify"
+    //%group="main property"
     //%weight=8
     export function SetSpace(input: number) {
         letterspace = input
@@ -695,7 +695,7 @@ namespace RenFont {
      */
     //%blockid=renfont_changeletterspacing
     //%block="change letter spacing by $input"
-    //%group="property"
+    //%group="main property"
     //%weight=6
     export function ChangeSpace(input: number) {
         letterspace += input
@@ -706,7 +706,7 @@ namespace RenFont {
      */
     //%blockid=renfont_setlinegap
     //%block="set line gap by $input"
-    //%group="property"
+    //%group="main property"
     //%weight=4
     export function SetLine(input: number) {
         lineheight = input
@@ -717,7 +717,7 @@ namespace RenFont {
      */
     //%blockid=renfont_changelinegap
     //%block="change line gap by $input"
-    //%group="property"
+    //%group="main property"
     //%weight=2
     export function ChangeLine(input: number) {
         lineheight += input
@@ -730,7 +730,7 @@ namespace RenFont {
      */
     //%blockid=renfont_getalignmentval
     //%block="get $alg of alignment"
-    //%group="property"
+    //%group="main property"
     export function getAlign(alg: align) {
         return alg
     }
@@ -789,7 +789,7 @@ namespace RenFont {
         }
 
         spriteUpdate() {
-            if (this.sdim) {
+            if (this.sdim && !(this.sdim).equals(image.create(1,1)) ) {
                 this.nimg = StampStrToDialog(this.sdim, this.stxt, this.pagew, this.stid, this.scol, this.bcol, this.salg, this.spacew, this.lineh)
             } else {
                 this.nimg = SetTextImage(this.stxt, this.pagew, this.stid, this.scol, this.bcol, this.salg, this.spacew, this.lineh)
