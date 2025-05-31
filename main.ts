@@ -12,7 +12,7 @@ namespace RenFontTable {
 }
 
 namespace SpriteKind {
-    export const renfontSprite = SpriteKind.create()
+    export const Renfont = SpriteKind.create()
 }
 
 //%color="#12d48a" icon="\uf031" group="[Sprites, Scene, Text]" block="Ren font"
@@ -886,6 +886,7 @@ namespace RenFont {
     export function createRenfontSprite(Text: string = "", Col: number, Bcol: number, alg: align, Tid: number, PageW: number = 0) {
         let renfontSprite = new RenfontSprite(Text, Col, Bcol, alg, Tid, PageW)
         renfontSprite.setPosition(Math.floor(scene.screenWidth() / 2), Math.floor(scene.screenHeight() / 2))
+        renfontSprite.setKind(SpriteKind.Renfont)
         return renfontSprite
     }
 
