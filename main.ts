@@ -187,7 +187,7 @@ namespace RenFont {
         }
         let vimg = image.create(Math.abs(x0 - x1), Math.abs(y0 - y1))
         vimg.drawImage(imgi, -x0, -y0)
-        imgi.copyFrom(vimg.clone())
+        imgj.copyFrom(vimg.clone())
         let uwid = 0
         if (inchar) {
             for (let xw2 = imgi.width - 1; xw2 >= 0; xw2--) {
