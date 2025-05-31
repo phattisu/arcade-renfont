@@ -8,7 +8,7 @@ namespace RenFontTable {
     }
 
     //%isKind
-    export const myMember = create()
+    export const myFont = create()
 }
 
 namespace SpriteKind {
@@ -185,6 +185,9 @@ namespace RenFont {
                 start = true
             }
         }
+        let vimg = image.create(Math.abs(x0 - x1), Math.abs(y0 - y1))
+        vimg.drawImage(imgi, -x0, -y0)
+        imgi.copyFrom(vimg.clone())
         let uwid = 0
         if (inchar) {
             for (let xw2 = imgi.width - 1; xw2 >= 0; xw2--) {
@@ -201,7 +204,8 @@ namespace RenFont {
                 }
             }
             if (scnwidt) { wj = imgi.width; scnwidt = false; }
-            uwid = Math.abs(wi3 - wj); if (true) { uwid = wj }
+            uwid = Math.abs(wi3 - wj);
+            if (true) uwid = wj
         }
 
         if (ligs[tid].indexOf(glyph) < 0) {
