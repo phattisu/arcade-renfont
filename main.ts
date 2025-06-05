@@ -129,10 +129,10 @@ namespace RenFont {
         return ImgOutput
     }
 
-    //%blockid=renfont_tablenameshadow
-    //%block="$arg"
     //%shim=KIND_GET
     //%kindMemberName=font
+    //%blockid=renfont_tablenameshadow
+    //%block="$arg"
     //%kindNamespace=RenFontTable
     //%kindPromptHint="enter your font name here"
     //%group="create"
@@ -1102,4 +1102,3 @@ namespace RenFont {
 
     }
 }
-
