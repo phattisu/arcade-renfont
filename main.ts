@@ -580,7 +580,7 @@ namespace RenFont {
     //%bcol.shadow=colorindexpicker
     //%group="render"
     //%weight=4
-    export function SetTextImage(input: string = "", iwidt: number = 0, tid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
+    export function SetTextImage(input: string = "", iwidt: number, tid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
         return SetTextImgValue(false, input, iwidt, tid, icol, bcol, alm, spacew, lineh) as Image
     }
 
@@ -597,7 +597,7 @@ namespace RenFont {
     //%bcol.shadow=colorindexpicker
     //%group="render"
     //%weight=2
-    export function SetTextImageArray(input: string = "", iwidt: number = 0, tid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
+    export function SetTextImageArray(input: string = "", iwidt: number, tid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
         return SetTextImgValue(true, input, iwidt, tid, icol, bcol, alm, spacew, lineh) as Image[]
     }
 
@@ -614,7 +614,7 @@ namespace RenFont {
     //%bcol.shadow=colorindexpicker
     //%group="Dialog render"
     //%weight=4
-    export function StampStrToDialog(Fimg: Image, Txt: string = "", Wval: number = 0, arrid: number, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
+    export function StampStrToDialog(Fimg: Image, Txt: string, Wval: number, arrid: number, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
         let StrImg: Image = SetTextImage(Txt, Wval, arrid, ucol, bcol, ualm, spacew, lineh)
         let gapw = Math.floor(Fimg.width / 3)
         let gaph = Math.floor(Fimg.height / 3)
@@ -638,7 +638,7 @@ namespace RenFont {
     //%bcol.shadow=colorindexpicker
     //%group="Dialog render"
     //%weight=2
-    export function StampStrArrToDialog(Fimg: Image, Txt: string = "", Wval: number = 0, arrid: number, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
+    export function StampStrArrToDialog(Fimg: Image, Txt: string, Wval: number, arrid: number, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
         let StrImg2: Image[] = SetTextImageArray(Txt, Wval, arrid, ucol, bcol, ualm, spacew, lineh)
         let gapw2 = Math.floor(Fimg.width / 3)
         let gaph2 = Math.floor(Fimg.height / 3)
@@ -741,13 +741,13 @@ namespace RenFont {
      */
     //%blockid=renfont_sprite_create
     //%block="create renfont sprite as $Text in color $Col with outline $Bcol in alignment $alg and tableid $Tid||and page width $PageW"
-    //%Tid.shadow=renfont_tablenameshadow Tid.defl="fonttemp"
+    //%Tid.shadow=renfont_tablenameshadow
     //%Col.shadow=colorindexpicker
     //%Bcol.shadow=colorindexpicker
     //%blockSetVariable="myRenfont"
     //%group="sprite mode"
     //%weight=22
-    export function createRenfontSprite(Text: string = "", Col: number, Bcol: number, alg: align, Tid: number, PageW: number = 0) {
+    export function createRenfontSprite(Text: string, Col: number, Bcol: number, alg: align, Tid: number, PageW: number = 0) {
         let renfontSprite = new RenfontSprite(Text, Col, Bcol, alg, Tid, PageW)
         renfontSprite.setPosition(Math.floor(scene.screenWidth() / 2), Math.floor(scene.screenHeight() / 2))
         renfontSprite.setKind(SpriteKind.Renfont)
@@ -979,7 +979,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_settableid
         //%block=" $this set Table id to $Tid"
-        //%Tid.shadow=renfont_tablenameshadow Tid.defl="fonttemp"
+        //%Tid.shadow=renfont_tablenameshadow
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=3
