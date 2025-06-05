@@ -1,6 +1,6 @@
 {
     "name": "arcade-renfont",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "basic font render for makecode arcade",
     "dependencies": {
         "device": "*"
