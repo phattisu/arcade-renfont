@@ -717,7 +717,7 @@ namespace Renfont {
      */
     //% blockid=renfont_presetfont
     //% block="SetupPresetFont $tempf with table id $tid"
-    //% tid.shadow=renfont_tablenameshadow tid.defl="fonttemp"
+    //% tid.shadow=renfont_tablenameshadow
     //% group="create"
     //% weight=10
     export function SetupPresetFont(tempf: tempfont, tid: number) {
