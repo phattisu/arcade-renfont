@@ -1,5 +1,5 @@
-// meta={"simUrl":"https://trg-arcade.userpxt.io/v2.0.56/---simulator","cdnUrl":"https://cdn.makecode.com","version":"0.1.4","target":"arcade","targetVersion":"2.0.56","repo":"phattisu/arcade-renfont"}
-// total=1642447 new=28.89% cached=66.80% other=4.31%
+// meta={"simUrl":"https://trg-arcade.userpxt.io/v2.0.56/---simulator","cdnUrl":"https://cdn.makecode.com","version":"0.1.5","target":"arcade","targetVersion":"2.0.56","repo":"phattisu/arcade-renfont"}
+// total=1642467 new=28.89% cached=66.80% other=4.31%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -428,7 +428,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P88155(s) {
+function _main___P104924(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -828,27 +828,27 @@ switch (step) {
     r0 = s.retval;
     r0 = pxsim_pxtrt.mkMap();
     globals.cidk___83312 = (r0);
-    s.tmp_0 = RenfontTable_create__P83768_mk(s);
+    s.tmp_0 = RenfontTable_create__P100550_mk(s);
     s.callLocIdx = 63; s.pc = 37; return s.tmp_0;
   case 37:
     r0 = s.retval;
-    globals.myFont___83776 = (r0);
+    globals.myFont___100558 = (r0);
     s.tmp_0 = SpriteKind_create__P20452_mk(s);
     s.callLocIdx = 64; s.pc = 38; return s.tmp_0;
   case 38:
     r0 = s.retval;
-    globals.Renfont___83779 = (r0);
+    globals.Renfont___100561 = (r0);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P88155.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"main.ts","functionName":"<main>","argumentNames":[]}
-_main___P88155.continuations = [  ]
+_main___P104924.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"main.ts","functionName":"<main>","argumentNames":[]}
+_main___P104924.continuations = [  ]
 
-function _main___P88155_mk(s) {
+function _main___P104924_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P88155, depth: s.depth + 1,
+        parent: s, fn: _main___P104924, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1387,7 +1387,7 @@ function gameOverConfig_inline__P22992_mk(s) {
 
 
 
-function RenfontTable_create__P83768(s) {
+function RenfontTable_create__P100550(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1397,28 +1397,28 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0) || runtime !== pxsim.runtime) re
 switch (step) {
   case 0:
 
-    r0 = pxsim_numops_toBoolDecr(globals.kindid___83767);
+    r0 = pxsim_numops_toBoolDecr(globals.kindid___100549);
     s.tmp_1 = r0;
     r0 = pxsim_Boolean__bang(s.tmp_1);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 1; continue; }
-    globals.kindid___83767 = (0);
+    globals.kindid___100549 = (0);
   case 1:
   case 2:
-    s.tmp_0 = r0 = globals.kindid___83767;
+    s.tmp_0 = r0 = globals.kindid___100549;
     r0 = (s.tmp_0 + 1);
-    globals.kindid___83767 = (r0);
+    globals.kindid___100549 = (r0);
     r0 = s.tmp_0;
     return leave(s, r0)
   default: oops()
 } } }
-RenfontTable_create__P83768.info = {"start":55,"length":90,"line":4,"column":4,"endLine":7,"endColumn":5,"fileName":"main.ts","functionName":"create","argumentNames":[]}
+RenfontTable_create__P100550.info = {"start":55,"length":90,"line":4,"column":4,"endLine":7,"endColumn":5,"fileName":"main.ts","functionName":"create","argumentNames":[]}
 
-function RenfontTable_create__P83768_mk(s) {
+function RenfontTable_create__P100550_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: RenfontTable_create__P83768, depth: s.depth + 1,
+        parent: s, fn: RenfontTable_create__P100550, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -42109,7 +42109,7 @@ const sprites_BaseSpriteSayRenderer__C20230_VT = mkVTable({
   },
 });
 
-const breakpoints = setupDebugger(1, ["cidk___83312","myFont___83776","Renfont___83779","kindid___83767"])
+const breakpoints = setupDebugger(1, ["cidk___83312","myFont___100558","Renfont___100561","kindid___100549"])
 
-return _main___P88155
+return _main___P104924
 })
