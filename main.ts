@@ -129,14 +129,6 @@ namespace RenFont {
         return ImgOutput
     }
 
-    function background(then: () => void) {
-        control.runInBackground(then)
-    }
-
-    function after(time: number, thenDo: () => void) {
-        setTimeout(thenDo, time)
-    }
-
     //%blockid=renfont_tablenameshadow
     //%block="$arg"
     //%shim=KIND_GET
@@ -775,7 +767,7 @@ namespace RenFont {
     //%Tid.shadow=renfont_tablenameshadow Tid.defl="fonttemp"
     //%Col.shadow=colorindexpicker
     //%Bcol.shadow=colorindexpicker
-    //%blockSetVariable="myrenfont"
+    //%blockSetVariable="myRenfont"
     //%group="sprite mode"
     //%weight=22
     export function createRenfontSprite(Text: string = "", Col: number, Bcol: number, alg: align, Tid: number, PageW: number = 0) {
@@ -835,7 +827,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_readtxt
         //%block="get $this as text data"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=18
         get getTextData() { return this.stxt }
@@ -846,7 +838,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_setalign
         //%block=" $this=variables_get set align to $alg"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=14
         set setAlign(alg: align) {
@@ -861,7 +853,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_setalignnum
         //%block=" $this set align value to $aln"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=12
         set setAlignNum(aln: number) {
@@ -876,11 +868,11 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_setdialog
         //%block=" $this set dialog frame to $DlImg=dialog_image_picker"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=10
         set setDialogTxt(DlImg: Image) {
-            if (this.sdim && ((myrenfont as RenfontSprite).sdim.equals(DlImg) && (this.sdim.equals(image.create(1, 1))))) return;
+            if (this.sdim && (this.sdim.equals(DlImg) && (this.sdim.equals(image.create(1, 1))))) return;
             this.sdim = DlImg;
             this.spriteUpdate();
         }
@@ -891,7 +883,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_cleardialog
         //%block=" $this clear dialog frame"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=9
         public clearDialog() {
@@ -906,7 +898,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_readtxt
         //%block="get $this as text data"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=18
         get getSpriteText() {
@@ -919,7 +911,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_setlinespace
         //%block=" $this set $gaptype to $value"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=8
         public setGapSpr(gaptype: spacetype, value: number = 0) {
@@ -944,7 +936,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_setdefaultlinespace
         //%block=" $this set $gaptype to default value"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=7
         public setDefaultGapSpr(gaptype: spacetype) {
@@ -969,7 +961,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_settextdata
         //%block=" $this set text to $Text"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=20
         public setSpriteText(Text: string = "") {
@@ -984,7 +976,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_settextcolor
         //%block=" $this set $colortexttype to $ncolor"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%ncolor.shadow=colorindexpicker
         //%group="sprite mode"
         //%weight=6
@@ -1011,7 +1003,7 @@ namespace RenFont {
         //%blockid=renfont_sprite_settableid
         //%block=" $this set Table id to $Tid"
         //%Tid.shadow=renfont_tablenameshadow Tid.defl="fonttemp"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=3
         set setSpriteTableId(Tid: number) {
@@ -1026,7 +1018,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_setpagewidth
         //%block=" $this set page width to $PageW"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=4
         public setSpritePageWidth(PageW: number = 0) {
@@ -1044,7 +1036,7 @@ namespace RenFont {
         //%blockid=renfont_sprite_playanimatiom
         //%block=" $this get animation play for pause type $delaymode in (ms) $secval||and separeted $pausev"
         //%secval.defl=100
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=2
         public getSpriteAnimPlay(delaymode: delaytype, secval: number, pausev: boolean = false) {
@@ -1094,9 +1086,9 @@ namespace RenFont {
                 this.anim = true;
                 this.anip = false;
                 control.runInBackground(function () {
-                    for (let i = 0; i < (myrenfont as RenfontSprite).imgarr.length; i++) {
-                        myrenfont.setImage((myrenfont as RenfontSprite).imgarr[i])
-                        pause((myrenfont as RenfontSprite).scval)
+                    for (let i = 0; i < this.imgarr.length; i++) {
+                        this.setImage(this.imgarr[i])
+                        pause(this.scval)
                     }
                 })
                 this.setImage(this.nimg);
@@ -1106,7 +1098,7 @@ namespace RenFont {
             if (!this.anim && !this.anip) {
                 this.anip = true;
                 this.anim = true;
-                animation.runImageAnimation(myrenfont, (myrenfont as RenfontSprite).imgarr, (myrenfont as RenfontSprite).scval, false)
+                animation.runImageAnimation(this, this.imgarr, this.scval, false)
             } else if (this.image.equals(this.nimg)) {
                 this.anip = false;
                 this.anim = false;
@@ -1124,7 +1116,7 @@ namespace RenFont {
          */
         //%blockid=renfont_sprite_playanimisdone
         //%block=" $this get animation is stop"
-        //%this.shadow=variables_get this.defl=myrenfont
+        //%this.shadow=variables_get this.defl=myRenfont
         //%group="sprite mode"
         //%weight=1
         public animdone() {
@@ -1133,9 +1125,4 @@ namespace RenFont {
 
     }
 }
-
-RenFont.SetupPresetFont(RenFont.tempfont.MainFont, RenFontTable.myFont)
-let myrenfont = RenFont.createRenfontSprite("hello", 1, 2, RenFont.align.left, RenFontTable.myFont)
-
-myrenfont.setSpriteText("hello world")
 
