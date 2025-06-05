@@ -334,6 +334,18 @@ namespace Renfont {
         return ligs[tid4]
     }
 
+    function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string) {
+        let lenfrom = fromchr.length, lento = tochr.length
+        if (curstr.substr(curidx, lento) == tochr) return true
+        if (curstr.substr(curidx, lenfrom) != fromchr) return false
+        while (curidx < curstr.length) {
+            curidx++
+            if (curstr.substr(curidx, lento) == tochr) return true
+            if (curstr.substr(curidx, lenfrom) != fromchr) return false
+        }
+        return false
+    }
+
     function SetTextImgValue(arrm: boolean, input: string, iwidt: number, lid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
         let tid5 = gettableid(lid)
         if (rendering) { if (arrm) { return [image.create(1, 1)] as Image[] } else { return image.create(1, 1) as Image } }
@@ -496,9 +508,9 @@ namespace Renfont {
                     curwidt += spacew
                 }
             } else if (input.charAt(currentletter3) == " ") {
-                curwidt += 3 * spacew
+                if (iwidt > 0 && findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n")) curwidt += 3 * spacew
             } else {
-                curwidt += 2 * spacew
+                if (iwidt > 0 && findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n")) curwidt += 2 * spacew
             }
             uhei = Math.max(uhei, hvi)
             uuoutput = output.clone()
@@ -539,11 +551,11 @@ namespace Renfont {
                         hie += hvi
                     }
                     hie += lineh
-                    if (findCommand(input, "n", currentletter3)) {
+                    if (findCommand(input, "n", currentletter3) || input.charAt(currentletter3) == "\n") {
                         currentletter3 += 2
                     }
                 }
-            } else if (findCommand(input, "n", currentletter3)) {
+            } else if (findCommand(input, "n", currentletter3) || input.charAt(currentletter3) == "\n") {
                 currentletter3 += 2
             }
             if (curchar.length - 1 > 0) { currentletter3 += curchar.length - 1 }
@@ -1092,3 +1104,6 @@ namespace Renfont {
 
     }
 }
+
+Renfont.SetupPresetFont(Renfont.tempfont.MainFont, 0)
+let myRenfont = Renfont.createRenfontSprite("hello \\n world", 1, 0, Renfont.align.center, 0, 50)
