@@ -1,5 +1,5 @@
 
-namespace RenFont {
+namespace Renfont {
 
     let cidk: { [key: string]: number } = {}
 

@@ -1,5 +1,5 @@
 
-namespace RenFont {
+namespace Renfont {
 
     export function _mainfont(tid: number = 0) {
         setCharFromSheet(

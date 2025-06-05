@@ -1,5 +1,5 @@
 
-namespace RenFontTable {
+namespace RenfontTable {
     let kindid: number;
 
     export function create() {
@@ -16,7 +16,7 @@ namespace SpriteKind {
 }
 
 //%color="#12d48a" icon="\uf031" group="[Sprites, Scene, Text]" block="Ren font"
-namespace RenFont {
+namespace Renfont {
 
     let rendering = false, tablename: number[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
 
@@ -133,7 +133,7 @@ namespace RenFont {
     //%kindMemberName=font
     //%blockid=renfont_tablenameshadow
     //%block="$arg"
-    //%kindNamespace=RenFontTable
+    //%kindNamespace=renfontTable
     //%kindPromptHint="enter your font name here"
     //%group="create"
     //%weight=1
@@ -755,25 +755,15 @@ namespace RenFont {
     }
 
     export class RenfontSprite extends Sprite {
-        //%blockCombine
         stxt: string
-        //%blockCombine
         scol: number
-        //%blockCombine
         stid: number
-        //%blockCombine
         stxw: number
-        //%blockCombine
         salg: number
-        //%blockCombine
         pagew: number
-        //%blockCombine
         spacew: number
-        //%blockCombine
         lineh: number
-        //%blockCombine
-        bcol: number
-        
+        bcol: number      
         scval: number
         sidx: number
         anim: boolean
