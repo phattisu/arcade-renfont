@@ -250,29 +250,6 @@ namespace RenFont {
         }
     }
 
-    export class gCprop { constructor(public chars: string, public offsets: number[]) { } }
-
-    //%blockid=renfont_gcharsprop
-    //%block="chars $chars offset $offsets"
-    export function gCharProp(chars: string, offsets: number[]) { return new gCprop(chars, offsets) }
-
-    export function charprops(groupc: gCprop, stayc: gCprop, cinc: gCprop, csub: gCprop): gCprop[] { return [groupc, stayc, cinc, csub] }
-
-    export class gCarrProp { constructor(public chars: string[], public offsets: number[]) { } }
-
-
-
-
-    //%blockid=renfont_gchararrsprop
-    //%block="chars array $chars offset $offsets"
-    export function gcarrprop(chars: string[], offsets: number[]) { return new gCarrProp(chars, offsets) }
-
-    export class colorGlyphProp { constructor(public bgcolor: number, public gapcolor: number, public basecolor: number, public guardcolor: number) { } }
-
-    //%blockid=renfont_colglyphprop
-    //%block="color:| bg $bgcol gap $gapcol base $basecol guard $guardcol"
-    export function colglyphprop(bgcol: number, gapcol: number, basecol: number, guardcol: number) { return new colorGlyphProp(bgcol, gapcol, basecol, guardcol) }
-
     /**
      * add more glyph
      * from charcter sheet
