@@ -50,10 +50,8 @@ namespace Renfont {
         let ic = 1
         let uc = charstr.charAt(idx + (reverse?-ic:ic))
         let istr = ustr + uc
-        if (reverse) istr = uc + ustr
         if (ligs[tid].indexOf(istr) < 0) return ustr
         while (ligs[tid].indexOf(istr) >= 0) {
-            ustr = "" + ustr + uc
             if (reverse) ustr = uc + ustr
             else ustr += uc
             ic++
@@ -489,7 +487,7 @@ namespace Renfont {
                     }
                 }
                 if (wie < 0) { wie = Math.abs(wie) }
-                drawTransparentImage(rimg, limg, curwidt - (nwidt + wie), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
+                drawTransparentImage(rimg, limg, curwidt - ((nwidt - wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length-1):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
                 if (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1))))] == 0) {
                     swidt = uwidt
                 } else {
