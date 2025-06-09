@@ -374,9 +374,11 @@ namespace Renfont {
                 }
                 hvi = ligages[tid5][(ligs[tid5].indexOf(curchar))].height
             } else if (input.charAt(currentletter) == " ") {
-                wie += 3 * spacew
+                if (iwidt > 0 && (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
+                else if (iwidt <= 0) wie += 3 * spacew
             } else {
-                wie += 2 * spacew
+                if (iwidt > 0 && (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 2 * spacew
+                else if (iwidt <= 0) wie += 2 * spacew
             }
             uhei = Math.max(uhei, hvi), heig = Math.max(heig, hie + hvi)
             if (iwidt > 0) {
@@ -425,9 +427,11 @@ namespace Renfont {
                     wie += spacew
                 }
             } else if (input.charAt(currentletter2) == " ") {
-                wie += 3 * spacew
+                if (iwidt > 0 && (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
+                else if (iwidt <= 0) wie += 3 * spacew
             } else {
-                wie += 2 * spacew
+                if (iwidt > 0 && (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 2 * spacew
+                else if (iwidt <= 0) wie += 2 * spacew
             }
             if (false) { widt = Math.max(widt, wie) }
             if (iwidt > 0) {
@@ -502,9 +506,11 @@ namespace Renfont {
                     curwidt += spacew
                 }
             } else if (input.charAt(currentletter3) == " ") {
-                if (iwidt > 0 && findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n")) curwidt += 3 * spacew
+                if (iwidt > 0 && (findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
+                else if (iwidt <= 0) curwidt += 3 * spacew
             } else {
-                if (iwidt > 0 && findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n")) curwidt += 2 * spacew
+                if (iwidt > 0 && (findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 2 * spacew
+                else if (iwidt <= 0) curwidt += 2 * spacew
             }
             uhei = Math.max(uhei, hvi)
             uuoutput = output.clone()
@@ -664,7 +670,7 @@ namespace Renfont {
      */
     //%blockid=renfont_setletterspacing
     //%block="set letter spacing to $input"
-    //%group="modify"
+    //%group="main propety"
     //%weight=8
     export function SetSpace(input: number) {
         letterspace = input
@@ -675,7 +681,7 @@ namespace Renfont {
      */
     //%blockid=renfont_changeletterspacing
     //%block="change letter spacing by $input"
-    //%group="modify"
+    //%group="main propety"
     //%weight=6
     export function ChangeSpace(input: number) {
         letterspace += input
@@ -686,7 +692,7 @@ namespace Renfont {
      */
     //%blockid=renfont_setlinegap
     //%block="set line gap by $input"
-    //%group="modify"
+    //%group="main propety"
     //%weight=4
     export function SetLine(input: number) {
         lineheight = input
@@ -697,7 +703,7 @@ namespace Renfont {
      */
     //%blockid=renfont_changelinegap
     //%block="change line gap by $input"
-    //%group="modify"
+    //%group="main propety"
     //%weight=2
     export function ChangeLine(input: number) {
         lineheight += input
@@ -710,7 +716,7 @@ namespace Renfont {
      */
     //%blockid=renfont_getalignmentval
     //%block="get $alg of alignment"
-    //%group="modify"
+    //%group="main propety"
     export function getAlign(alg: align) {
         return alg
     }
@@ -726,7 +732,7 @@ namespace Renfont {
     //%tid.shadow=renfont_tablenameshadow
     //%group="create"
     //%weight=10
-    export function SetupPresetFont(tempf: tempfont, tid: string) {
+    export function setupPresetFont(tempf: tempfont, tid: string) {
         switch (tempf) {
             case 1:
                 _mainfont(tid)
@@ -1133,3 +1139,6 @@ namespace Renfont {
         }
     }
 }
+
+Renfont.setupPresetFont(Renfont.tempfont.MainFont, "fonttemp")
+let myRenfont = Renfont.createSprite("Hello world", 1, 0, Renfont.align.left, "fonttemp")
