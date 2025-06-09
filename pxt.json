@@ -1,6 +1,6 @@
 {
     "name": "arcade-renfont",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "basic text engine render like standard ascii text engine",
     "dependencies": {
         "device": "*"
