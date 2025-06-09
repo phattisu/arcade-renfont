@@ -1,5 +1,5 @@
  
-
+> Download MakecodeArcade binary extension file at [arcade-renfont.uf2](https://github.com/phattisu/arcade-renfont/raw/refs/heads/master/arcade-renfont.uf2)
 
 > Open this page at [https://phattisu.github.io/arcade-renfont/](https://phattisu.github.io/arcade-renfont/)
 
