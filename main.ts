@@ -1139,6 +1139,3 @@ namespace Renfont {
         }
     }
 }
-
-Renfont.setupPresetFont(Renfont.tempfont.MainFont, "fonttemp")
-let myRenfont = Renfont.createSprite("Hello world", 1, 0, Renfont.align.left, "fonttemp")
