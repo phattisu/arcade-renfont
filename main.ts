@@ -790,7 +790,7 @@ namespace Renfont {
         nimg: Image
         imgarr: Image[]
 
-        protected spriteUpdate() {
+        protected updateTextImage() {
             if (!this) return;
             if (this.sdim) {
                 this.nimg = stampStrToDialog(
@@ -830,7 +830,7 @@ namespace Renfont {
                 alg
             ))
             this.stxt = txt, this.scol = scol, this.bcol = bcol, this.stid = tid, this.salg = alg, this.pagew = pagew
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -882,7 +882,7 @@ namespace Renfont {
         public setSpriteAlign(alg: align) {
             if (this.salg == getAlign(alg)) return;
             this.salg = getAlign(alg)
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -898,7 +898,7 @@ namespace Renfont {
             aln = Math.constrain(aln, -1, 1)
             if (this.salg == aln) return;
             this.salg = aln
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -913,7 +913,7 @@ namespace Renfont {
         public setSpriteDialogTxt(DlImg: Image) {
             if (this.sdim && this.sdim.equals(DlImg)) return;
             this.sdim = DlImg
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -928,7 +928,7 @@ namespace Renfont {
         public clearSpriteDialog() {
             if (!this.sdim) return;
             this.sdim = undefined
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
     
@@ -954,7 +954,7 @@ namespace Renfont {
                 default:
                     return;
             }
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -979,7 +979,7 @@ namespace Renfont {
                 default:
                     return;
             }
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -994,7 +994,7 @@ namespace Renfont {
         public setSpriteText(Text: string) {
             if (this.stxt == Text) return;
             this.stxt = Text
-            this.spriteUpdate()
+            this.updateTextImage()
         }
 
         /**
@@ -1020,7 +1020,7 @@ namespace Renfont {
                 default:
                     return;
             }
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -1036,7 +1036,7 @@ namespace Renfont {
         public setSpriteTableId(Tid: string) {
             if (this.stid == Tid) return;
             this.stid = Tid
-            this.spriteUpdate()
+            this.updateTextImage()
         }
     
         /**
@@ -1051,7 +1051,7 @@ namespace Renfont {
         public setSpritePageWidth(PageW: number = 0) {
             if (this.pagew == PageW) return;
             this.pagew = PageW
-            this.spriteUpdate()
+            this.updateTextImage()
         }
 
         /**
