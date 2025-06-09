@@ -29,10 +29,11 @@ namespace Renfont {
         let lenfrom = fromchr.length, lento = tochr.length
         if (curstr.substr(curi + (lento - ((curi % lento) + 1)), lento) == tochr) return true
         if (curstr.substr(curi + (lenfrom - ((curi % lenfrom) + 1)), lenfrom) != fromchr) return false
+        curi++
         while (curi < curstr.length) {
-            curi++
             if (curstr.substr(curi + (lento - ((curi % lento) + 1)), lento) == tochr) return true
             if (curstr.substr(curi + (lenfrom - ((curi % lenfrom) + 1)), lenfrom) != fromchr) return false
+            curi++
         }
         return false
     }
@@ -47,16 +48,19 @@ namespace Renfont {
     function deepChar(tid: number = 0, idx: number = 0, charstr: string = "", reverse: boolean = false) {
         let ustr = charstr.charAt(idx)
         let ic = 1
-        let uc = charstr.charAt(idx + ic)
-        let istr = "" + ustr + uc
-        if (ligs[tid].indexOf(istr) < 0) { return ustr }
+        let uc = charstr.charAt(idx + (reverse?-ic:ic))
+        let istr = ustr + uc
+        if (reverse) istr = uc + ustr
+        if (ligs[tid].indexOf(istr) < 0) return ustr
         while (ligs[tid].indexOf(istr) >= 0) {
             ustr = "" + ustr + uc
-            if (reverse) ic--;
-            else ic++;
-            uc = charstr.charAt(idx + ic)
-            istr = "" + ustr + uc
-            if (idx + ic >= charstr.length) { break }
+            if (reverse) ustr = uc + ustr
+            else ustr += uc
+            ic++
+            uc = charstr.charAt(idx + (reverse?-ic:ic))
+            if (reverse) istr = uc + ustr
+            else istr = ustr + uc
+            if ((reverse && idx - ic < 0) || (!reverse && idx + ic >= charstr.length)) { break }
         }
         return ustr
     }
