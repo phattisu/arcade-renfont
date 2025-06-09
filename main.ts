@@ -9,7 +9,7 @@ namespace SpriteKind {
 //%weight=10
 namespace Renfont {
 
-    let rendering = false; let tablename: string[] = []; let ligs: string[][] = []; let ligages: Image[][] = []; let ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = []; let storeid: number[] = []; let letterspace: number = 1, curid: number = 0, lineheight: number = 1;
+    let rendering = false, tablename: string[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
 
     function gettableid(name: string) {
         if (tablename.indexOf(name) < 0) {
@@ -20,7 +20,7 @@ namespace Renfont {
     }
 
     function drawTransparentImage(src: Image, to: Image, x: number, y: number) {
-        if (!src || !to) { return; }
+        if (!src || !to) return;
         to.drawTransparentImage(src, x, y)
     }
 
@@ -266,7 +266,7 @@ namespace Renfont {
     //%group="create"
     //%weight=4
     export function setCharFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string = "", StayChar: string = "", CharOnChar: string = "", CharSubW: string = "", twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
-        let gwid = Math.round(PngSheet.width / twid); let uig = image.create(twid, thei); let txi = 0; let tyi = 0;
+        let gwid = Math.round(PngSheet.width / twid), uig = image.create(twid, thei), txi = 0, tyi = 0;
         for (let tvn = 0; tvn < GroupChar.length; tvn++) {
             uig = image.create(twid, thei); txi = twid * (tvn % gwid); tyi = thei * Math.floor(tvn / gwid); drawTransparentImage(PngSheet, uig, 0 - txi, 0 - tyi); setCharecter(tid, GroupChar.charAt(tvn), uig, StayChar.includes(GroupChar.charAt(tvn)), CharOnChar.includes(GroupChar.charAt(tvn)), CharSubW.includes(GroupChar.charAt(tvn)), bcl, scl, mcl, ncl);
         }
@@ -287,7 +287,7 @@ namespace Renfont {
     //%group="create"
     //%weight=6
     export function setCharArrFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string[] = [], StayChar: string[] = [], CharOnChar: string[] = [], CharSubW: string[] = [], twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
-        let gwid2 = Math.round(PngSheet.width / twid); let uig2 = image.create(twid, thei); let txi2 = 0; let tyi2 = 0;
+        let gwid2 = Math.round(PngSheet.width / twid), uig2 = image.create(twid, thei), txi2 = 0, tyi2 = 0;
         for (let tvn2 = 0; tvn2 < GroupChar.length; tvn2++) {
             uig2 = image.create(twid, thei); txi2 = twid * (tvn2 % gwid2); tyi2 = thei * Math.floor(tvn2 / gwid2); drawTransparentImage(PngSheet, uig2, 0 - txi2, 0 - tyi2); setCharecter(tid, GroupChar[tvn2], uig2, StayChar.indexOf(GroupChar[tvn2]) >= 0, CharOnChar.indexOf(GroupChar[tvn2]) >= 0, CharSubW.indexOf(GroupChar[tvn2]) >= 0, bcl, scl, mcl, ncl);
         }
@@ -738,7 +738,7 @@ namespace Renfont {
         }
     }
 
-    export enum SprDataNumType { Tcol = 1, Bcol = 2, PageW = 3, Talg = 4 }
+    export enum thisDataNumType { Tcol = 1, Bcol = 2, PageW = 3, Talg = 4 }
 
     export enum spacetype { letterspace = 1, lineheight = 2 }
 
@@ -747,19 +747,20 @@ namespace Renfont {
     export enum delaytype { delaypermsec = 1, multisec = 2 }
 
     /**
-     * create the renfont as sprite
+     * create the renfont as Sprite
      */
-    //% blockid=fontren_sprite_create
-    //% block="create renfont sprite as $Text in color $Col with outline $Bcol in alignment $alg and tableid $Tid||and page width $PageW"
-    //% Tid.shadow=fontren_tablenameshadow
-    //% Col.shadow=colorindexpicker
-    //% Bcol.shadow=colorindexpicker
-    //% blockSetVariable="myRenfont"
-    //% group="sprite mode"
-    //% weight=22
-    export function createRenfontSprite(Text: string, Col: number, Bcol: number, alg: align, Tid: string, PageW: number = 0) {
+    //%blockid=renfont_Sprite_create
+    //%block="create renfont Sprite as $Text in color $Col with outline $Bcol in alignment $alg and tableid $Tid||and page width $PageW"
+    //%Tid.shadow=renfont_tablenameshadow Tid.defl="fonttemp"
+    //%Col.shadow=colorindexpicker
+    //%Bcol.shadow=colorindexpicker
+    //%blockSetVariable="myRenfont"
+    //%group="Sprite mode"
+    //%weight=22
+    export function createSprite(Text: string = "", Col: number, Bcol: number, alg: align, Tid: string, PageW: number = 0) {
         let renfontSprite = new RenfontSprite(Text, Col, Bcol, alg, Tid, PageW)
         renfontSprite.setKind(SpriteKind.Renfont)
+        renfontSprite.setPosition(Math.floor(scene.screenWidth() / 2), Math.floor(scene.screenHeight() / 2))
         return renfontSprite
     }
 
@@ -767,7 +768,6 @@ namespace Renfont {
         stxt: string
         scol: number
         stid: string
-        stxw: number
         salg: number
         pagew: number
         spacew: number
@@ -781,117 +781,158 @@ namespace Renfont {
         nimg: Image
         imgarr: Image[]
 
-        constructor(txt: string, tcol: number, bcol: number, alg: align, tid: string, pagew: number = 0) {
-            super(image.create(0, 0))
-            this.stxt = txt, this.scol = tcol, this.bcol = bcol, this.salg = alg, this.stid = tid, this.pagew = pagew
-            this.spriteUpdate()
-            this.setPosition(Math.round(scene.screenWidth() / 2), Math.round(scene.screenHeight() / 2))
-        }
-
         protected spriteUpdate() {
-            if (this.sdim && !(this.sdim).equals(image.create(0, 0))) {
-                this.nimg = stampStrToDialog(this.sdim, this.stxt, this.pagew, this.stid, this.scol, this.bcol, this.salg, this.spacew, this.lineh)
-            } else {
-                this.nimg = setTextImage(this.stxt, this.pagew, this.stid, this.scol, this.bcol, this.salg, this.spacew, this.lineh)
-            }
-            if (this.image.equals(this.nimg)) return;
-            this.setImage(this.nimg)
+        if (!this) return;
+        if (this.sdim) {
+            this.nimg = stampStrToDialog(
+                this.sdim, 
+                this.stxt, 
+                this.pagew, 
+                this.stid, 
+                this.scol, 
+                this.bcol, 
+                this.salg, 
+                this.spacew, 
+                this.lineh
+            )
+        } else {
+            this.nimg = setTextImage(
+                this.stxt, 
+                this.pagew, 
+                this.stid, 
+                this.scol, 
+                this.bcol, 
+                this.salg, 
+                this.spacew, 
+                this.lineh
+            )
         }
+        if (this.image.equals(this.nimg)) return;
+        this.setImage(this.nimg)
+       }
 
+        constructor(txt: string, scol: number, bcol: number, alg: align, tid: string, pagew: number) {
+            super(setTextImage(
+                txt,
+                pagew,
+                tid,
+                scol,
+                bcol,
+                alg
+            ))
+            this.stxt = txt, this.scol = scol, this.bcol = bcol, this.stid = tid, this.salg = alg, this.pagew = pagew
+            this.spriteUpdate()
+        }
+    
         /**
          * get text data
-         * from unifont sprite
+         * from renfont Sprite
          */
-        //% blockid=fontren_sprite_readtxt
-        //% block="get $this as text data"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=18
-        get getTextData() { return this.stxt }
-
-        /**
-         * set alignment as enum
-         * to unifont sprite
-         */
-        //% blockid=fontren_sprite_setalign
-        //% block=" $this=variables_get set align to $alg"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=14
-        set setAlign(alg: align) {
-            if (this.salg == getAlign(alg)) return;
-            this.salg = getAlign(alg);
-            this.spriteUpdate();
-        }
-
-        /**
-         * set alignment as number
-         * to unifont sprite
-         */
-        //% blockid=fontren_sprite_setalignnum
-        //% block=" $this set align value to $aln"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=12
-        set setAlignNum(aln: number) {
-            if (this.salg == aln) return;
-            this.salg = aln;
-            this.spriteUpdate();
-        }
-
-        /**
-         * add or set dialog frame
-         * to unifont sprite
-         */
-        //% blockid=fontren_sprite_setdialog
-        //% block=" $this set dialog frame to $DlImg=dialog_image_picker"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=10
-        set setDialogTxt(DlImg: Image) {
-            if (this.sdim && (this.sdim.equals(DlImg) && (this.sdim.equals(image.create(0, 0))))) return;
-            this.sdim = DlImg;
-            this.spriteUpdate();
-        }
-
-        /**
-         * remove dialog frame
-         * at unifont sprite
-         */
-        //% blockid=fontren_sprite_cleardialog
-        //% block=" $this clear dialog frame"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=9
-        public clearDialog() {
-            if (!(this.sdim)) { return; }
-            this.sdim = image.create(0, 0);
-            this.spriteUpdate();
-        }
-
-        /**
-         * get text data
-         * from unifont sprite
-         */
-        //% blockid=fontren_sprite_readtxt
-        //% block="get $this as text data"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=18
+        //%blockid=renfont_Sprite_readtxt
+        //%block="get $this as text data"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=18
         get getSpriteText() {
             return this.stxt
         }
-
+    
+        /**
+         * get option data number
+         * from renfont Sprite
+         */
+        //%blockid=renfont_Sprite_readthisdatainnum
+        //%block="get $this from $NumType"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=16
+        public getSpriteTextData(NumType: thisDataNumType) {
+            switch (NumType) {
+                case 1:
+                    return this.scol;
+                case 2:
+                    return this.bcol;
+                case 3:
+                    return this.pagew;
+                case 4:
+                    return this.salg;
+                default:
+                    return -1;
+            }
+        }
+    
+        /**
+         * set alignment as enum
+         * to renfont Sprite
+         */
+        //%blockid=renfont_Sprite_setalign
+        //%block=" $this=variables_get set align to $alg"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=14
+        set setSpriteAlign(alg: align) {
+            if (this.salg == getAlign(alg)) return;
+            this.salg = getAlign(alg)
+            this.spriteUpdate()
+        }
+    
+        /**
+         * set alignment as number
+         * to renfont Sprite
+         */
+        //%blockid=renfont_Sprite_setalignnum
+        //%block=" $this set align value to $aln"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=12
+        public setSpriteAlignNum(aln: number = 0) {
+            aln = Math.constrain(aln, -1, 1)
+            if (this.salg == aln) return;
+            this.salg = aln
+            this.spriteUpdate()
+        }
+    
+        /**
+         * add or set dialog frame
+         * to renfont Sprite
+         */
+        //%blockid=renfont_Sprite_setdialog
+        //%block=" $this set dialog frame to $DlImg=dialog_image_picker"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=10
+        set setSpriteDialogTxt(DlImg: Image) {
+            if (this.sdim && this.sdim.equals(DlImg)) return;
+            this.sdim = DlImg
+            this.spriteUpdate()
+        }
+    
+        /**
+         * remove dialog frame
+         * at renfont Sprite
+         */
+        //%blockid=renfont_Sprite_cleardialog
+        //%block=" $this clear dialog frame"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=9
+        public clearSpriteDialog() {
+            if (!this.sdim) return;
+            this.sdim = undefined
+            this.spriteUpdate()
+        }
+    
+    
         /**
          * set gap space 
-         * to unifont sprite
+         * to renfont Sprite
          */
-        //% blockid=fontren_sprite_setlinespace
-        //% block=" $this set $gaptype to $value"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=8
-        public setGapSpr(gaptype: spacetype, value: number = 0) {
+        //%blockid=renfont_Sprite_setlinespace
+        //%block=" $this set $gaptype to $value"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=8
+        public setGap(gaptype: spacetype, value: number = 0) {
             switch (gaptype) {
                 case 1:
                     if (this.spacew == value) return;
@@ -906,20 +947,20 @@ namespace Renfont {
             }
             this.spriteUpdate()
         }
-
+    
         /**
          * clear gap space
-         * at unifont sprite
+         * at renfont Sprite
          */
-        //% blockid=fontren_sprite_setdefaultlinespace
-        //% block=" $this set $gaptype to default value"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=7
-        public setDefaultGapSpr(gaptype: spacetype) {
+        //%blockid=renfont_Sprite_setdefaultlinespace
+        //%block=" $this set $gaptype to default value"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=7
+        public setDefaultGap(gaptype: spacetype) {
             switch (gaptype) {
                 case 1:
-                    if (this.spacew == undefined) return;
+                    if (this.spacew == undefined) return; 
                     this.spacew = undefined
                     break;
                 case 2:
@@ -931,32 +972,32 @@ namespace Renfont {
             }
             this.spriteUpdate()
         }
-
+    
         /**
          * set text to render
-         * to unifont sprite
+         * to renfont Sprite
          */
-        //% blockid=fontren_sprite_settextdata
-        //% block=" $this set text to $Text"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=20
-        public setSpriteText(Text: string = "") {
+        //%blockid=renfont_Sprite_settextdata
+        //%block=" $this set text to $Text"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=20
+        set setSpriteText(Text: string) {
             if (this.stxt == Text) return;
-            this.stxt = Text;
-            this.spriteUpdate();
+            this.stxt = Text
+            this.spriteUpdate()
         }
 
         /**
          * set text color index
-         * to unifont sprite
+         * to renfont Sprite
          */
-        //% blockid=fontren_sprite_settextcolor
-        //% block=" $this set $colortexttype to $ncolor"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% ncolor.shadow=colorindexpicker
-        //% group="sprite mode"
-        //% weight=6
+        //%blockid=renfont_Sprite_settextcolor
+        //%block=" $this set $colortexttype to $ncolor"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%ncolor.shadow=colorindexpicker
+        //%group="Sprite mode"
+        //%weight=6
         public setSpriteTextCol(colortexttype: colortype, ncolor: number = 0) {
             switch (colortexttype) {
                 case 1:
@@ -972,76 +1013,73 @@ namespace Renfont {
             }
             this.spriteUpdate()
         }
-
+    
         /**
          * set table id 
-         * to unifont sprite
+         * to renfont Sprite
          */
-        //% blockid=fontren_sprite_settableid
-        //% block=" $this set Table id to $Tid"
-        //% Tid.shadow=fontren_tablenameshadow
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=3
-        set setSpriteTableId(Tid: string) {
+        //%blockid=renfont_Sprite_settableid
+        //%block=" $this set Table id to $Tid"
+        //%Tid.shadow=renfont_tablenameshadow
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=3
+        public setSpriteTableId(Tid: string) {
             if (this.stid == Tid) return;
-            this.stid = Tid;
-            this.spriteUpdate();
+            this.stid = Tid
+            this.spriteUpdate()
         }
-
+    
         /**
          * set page width
-         * to unifont sprite
+         * to renfont Sprite
          */
-        //% blockid=fontren_sprite_setpagewidth
-        //% block=" $this set page width to $PageW"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=4
+        //%blockid=renfont_Sprite_setpagewidth
+        //%block=" $this set page width to $PageW"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=4
         public setSpritePageWidth(PageW: number = 0) {
-            if (this.stxw == PageW) return;
-            this.stxw = PageW;
-            this.spriteUpdate();
+            if (this.pagew == PageW) return;
+            this.pagew = PageW
+            this.spriteUpdate()
         }
-
-
 
         /**
          * play text animation
-         * from unifont sprite
+         * from renfont Sprite
          */
-        //% blockid=fontren_sprite_playanimatiom
-        //% block=" $this get animation play for pause type $delaymode in (ms) $secval||and run Background $paused"
-        //% secval.defl=100
-        //% paused.shadow=toggleYesNo
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=2
-        public getSpriteAnimPlay(delaymode: delaytype, secval: number, paused: boolean = false) {
+        //%blockid=renfont_Sprite_playanimatiom
+        //%block=" $this get animation play for pause type $delaymode in (ms) $secval||and separeted $pausev"
+        //%secval.defl=100
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=2
+        public getSpriteAnimPlay(delaymode: delaytype, secval: number, pausev: boolean = false) {
             if (this.anim) return;
             this.scval = 0
             let umsec = 0, lensec = 0;
             if (this.sdim) {
                 this.imgarr = stampStrArrToDialog(
-                    this.sdim,
-                    this.stxt,
-                    this.pagew,
-                    this.stid,
-                    this.scol,
-                    this.bcol,
-                    this.salg,
-                    this.spacew,
+                    this.sdim, 
+                    this.stxt, 
+                    this.pagew, 
+                    this.stid, 
+                    this.scol, 
+                    this.bcol, 
+                    this.salg, 
+                    this.spacew, 
                     this.lineh
                 )
             } else {
                 this.imgarr = setTextImageArray(
-                    this.stxt,
-                    this.pagew,
-                    this.stid,
-                    this.scol,
-                    this.bcol,
-                    this.salg,
-                    this.spacew,
+                    this.stxt, 
+                    this.pagew, 
+                    this.stid, 
+                    this.scol, 
+                    this.bcol, 
+                    this.salg, 
+                    this.spacew, 
                     this.lineh
                 )
             }
@@ -1060,32 +1098,32 @@ namespace Renfont {
                     return;
             }
             this.sidx = 0
-            if (!this.anim && !this.anip) {
-                this.anip = true;
-                this.anim = true;
+            if (this.anim && !this.anip) {
+                this.anip = true
+                this.anim = true
                 animation.runImageAnimation(this, this.imgarr, this.scval, false)
             } else if (this.image.equals(this.nimg)) {
-                this.anip = false;
-                this.anim = false;
+                this.anip = false
+                this.anim = false
             }
             setTimeout(function () {
-                this.anip = false;
-                this.anim = false;
-                this.setImage(this.nimg);
+                this.anip = false
+                this.anim = false
+                this.setImage(this.nimg)
             }, lensec)
-            if (paused) pause(lensec);
+            if (pausev) pause(lensec);
         }
-
+    
         /**
-         * check unifont sprite
+         * check renfont Sprite
          * playing animation until done
          */
-        //% blockid=fontren_sprite_playanimisdone
-        //% block=" $this get animation is stop"
-        //% this.shadow=variables_get this.defl=myRenfont
-        //% group="sprite mode"
-        //% weight=1
-        public animdone() {
+        //%blockid=renfont_Sprite_playanimisdone
+        //%block=" $this get animation is stop"
+        //%this.shadow=variables_get this.defl=myRenfont
+        //%group="Sprite mode"
+        //%weight=1
+        get animdone() {
             return !(this.anim)
         }
     }
