@@ -785,9 +785,7 @@ namespace Renfont {
         lineh: number
         bcol: number
         scval: number
-        sidx: number
         anim: boolean
-        anip: boolean
         sdim: Image
         nimg: Image
         imgarr: Image[]
@@ -1061,13 +1059,14 @@ namespace Renfont {
          * from renfont Sprite
          */
         //%blockid=renfont_Sprite_playanimatiom
-        //%block=" $this get animation play for pause type $delaymode in (ms) $secval||and separeted $pausev"
+        //%block=" $this get animation play for pause type $delaymode in (ms) $secval||and paused $pausev"
         //%secval.defl=100
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=2
         public getSpriteAnimPlay(delaymode: delaytype, secval: number, pausev: boolean = false) {
             if (this.anim) return;
+            this.anim = true
             this.scval = 0
             let umsec = 0, lensec = 0;
             if (this.sdim) {
@@ -1096,29 +1095,20 @@ namespace Renfont {
             }
             switch (delaymode) {
                 case 1:
-                    this.scval = secval
-                    umsec = secval
-                    lensec = secval * this.imgarr.length
+                    this.scval = secval - 1
+                    umsec = this.scval
+                    lensec = this.scval * this.imgarr.length
                     break;
                 case 2:
                     this.scval = secval / this.imgarr.length
-                    umsec = secval
-                    lensec = secval
+                    umsec = secval - 1
+                    lensec = secval - 1
                     break;
                 default:
                     return;
             }
-            this.sidx = 0
-            if (this.anim && !this.anip) {
-                this.anip = true
-                this.anim = true
-                animation.runImageAnimation(this, this.imgarr, this.scval, false)
-            } else if (this.image.equals(this.nimg)) {
-                this.anip = false
-                this.anim = false
-            }
+            animation.runImageAnimation(this, this.imgarr, this.scval, false)
             setTimeout(function () {
-                this.anip = false
                 this.anim = false
                 this.setImage(this.nimg)
             }, lensec)
