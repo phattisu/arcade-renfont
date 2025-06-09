@@ -1,26 +1,17 @@
 
-namespace RenfontTable {
-    let kindid: number;
-
-    export function create() {
-        if (!(kindid)) kindid = 0
-        return kindid++
-    }
-
-    //% isKind
-    export const myFont = create()
-}
-
 namespace SpriteKind {
     export const Renfont = SpriteKind.create()
 }
-
-//% block="Ren font" color="#12d48a" icon="\uf031"
+//%block="RenFont"
+//%color="#12d48a" 
+//%icon="\uf031"
+//%group="[Sprites, Text, Images]"
+//%weight=10
 namespace Renfont {
 
-    let rendering = false, tablename: number[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
+    let rendering = false; let tablename: string[] = []; let ligs: string[][] = []; let ligages: Image[][] = []; let ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = []; let storeid: number[] = []; let letterspace: number = 1, curid: number = 0, lineheight: number = 1;
 
-    function gettableid(name: number) {
+    function gettableid(name: string) {
         if (tablename.indexOf(name) < 0) {
             tablename.push(name); storeid.push(curid); ligs.push([]); ligages.push([]); ligwidth.push([]); ligsubw.push([]); ligdir.push([]); ligcol.push([]); ligul.push([]); curid += 1;
             return tablename.length - 1
@@ -31,6 +22,18 @@ namespace Renfont {
     function drawTransparentImage(src: Image, to: Image, x: number, y: number) {
         if (!src || !to) { return; }
         to.drawTransparentImage(src, x, y)
+    }
+
+    function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string) {
+        let lenfrom = fromchr.length, lento = tochr.length
+        if (curstr.substr(curidx, lento) == tochr) return true
+        if (curstr.substr(curidx, lenfrom) != fromchr) return false
+        while (curidx < curstr.length) {
+            curidx++
+            if (curstr.substr(curidx, lento) == tochr) return true
+            if (curstr.substr(curidx, lenfrom) != fromchr) return false
+        }
+        return false
     }
 
     function findCommand(tvj: string, chj: string = "", nvj: number): boolean {
@@ -76,7 +79,7 @@ namespace Renfont {
         return Outputi
     }
 
-    function SetImgFrame(ImgF: Image, Wh: number, Ht: number) {
+    function setImgFrame(ImgF: Image, Wh: number, Ht: number) {
         let ImgOutput = image.create(Wh, Ht)
         let Twidt = Math.floor(ImgF.width / 3)
         let Theig = Math.floor(ImgF.height / 3)
@@ -129,31 +132,29 @@ namespace Renfont {
         return ImgOutput
     }
 
-    //% blockid=renfont_tablenameshadow
-    //% block="$arg"
-    //% shim=KIND_GET
-    //% kindMemberName=font
-    //% kindNamespace=RenfontTable
-    //% kindPromptHint="enter your font name here"
-    //% group="create"
-    //% weight=1
-    export function tableKindShadow(arg: number) {
-        return arg
+    //%block="$name"
+    //%blockId=renfont_tablenameshadow
+    //%name.defl="fonttemp"
+    //%blockHidden=true shim=TD_ID
+    //%name.fieldEditor="autocomplete" name.fieldOptions.decompileLiterals=true
+    //%name.fieldOptions.key="tablenameshadow"
+    export function _tableNameShadow(name: string) {
+        return name
     }
 
     /**
      * add charcter glyph to the table
      */
-    //% blockid=renfont_setcharecter
-    //% block="set table id $gid and set letter $glyph to img $imgi=screen_image_picker||and the letter can move? $notmove and stay on or under the letter? $onthechar and substract width $inchar erase col $bcol spacebar col $scol base col $mcol guard col $ncol"
-    //% gid.shadow=renfont_tablenameshadow
-    //% bcol.shadow=colorindexpicker
-    //% scol.shadow=colorindexpicker
-    //% mcol.shadow=colorindexpicker
-    //% ncol.shadow=colorindexpicker
-    //% group="create"
-    //% weight=2
-    export function setCharecter(gid: number, glyph: string = "", imgi: Image = image.create(5, 8), notmove: boolean = false, onthechar: boolean = false, inchar: boolean = false, bcol: number = 0, scol: number = 0, mcol: number = 0, ncol: number = 0) {
+    //%blockid=renfont_setcharecter
+    //%block="set |table id $gid and set letter $glyph to img $imgi=screen_image_picker||and |the letter can move? $notmove and stay on or under the letter? $onthechar and substract width $inchar erase col $bcol spacebar col $scol base col $mcol guard col $ncol"
+    //%gid.shadow=renfont_tablenameshadow
+    //%bcol.shadow=colorindexpicker
+    //%scol.shadow=colorindexpicker
+    //%mcol.shadow=colorindexpicker
+    //%ncol.shadow=colorindexpicker
+    //%group="create"
+    //%weight=2
+    export function setCharecter(gid: string, glyph: string = "", imgi: Image = image.create(5, 8), notmove: boolean = false, onthechar: boolean = false, inchar: boolean = false, bcol: number = 0, scol: number = 0, mcol: number = 0, ncol: number = 0) {
         let tid = gettableid(gid), sncol = true, scnwidt = true, scwidt = false, wi3 = 0, wj = 0, si = 0;
         if (bcol > 0 && bcol < 16) imgi.replace(bcol, 0)
         let uimg = imgi.clone()
@@ -255,17 +256,17 @@ namespace Renfont {
      * from charcter sheet
      * to the table
      */
-    //% blockid=renfont_setcharfromimgsheet
-    //% block="set table id $tid and set img sheet $PngSheet=screen_image_picker with letters $GroupChar||and staying letters $StayChar letters on the letters $CharOnChar and Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
-    //% tid.shadow=renfont_tablenameshadow
-    //% bcl.shadow=colorindexpicker
-    //% scl.shadow=colorindexpicker
-    //% mcl.shadow=colorindexpicker
-    //% ncl.shadow=colorindexpicker
-    //% group="create"
-    //% weight=4
-    export function setCharFromSheet(tid: number, PngSheet: Image = image.create(10, 16), GroupChar: string = "", StayChar: string = "", CharOnChar: string = "", CharSubW: string = "", twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
-        let gwid = Math.round(PngSheet.width / twid), uig = image.create(twid, thei), txi = 0, tyi = 0;
+    //%blockid=renfont_setcharfromimgsheet
+    //%block="set |table id $tid and set img sheet $PngSheet=screen_image_picker with letters $GroupChar||and |staying letters $StayChar letters on the letters $CharOnChar and Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
+    //%tid.shadow=renfont_tablenameshadow
+    //%bcl.shadow=colorindexpicker
+    //%scl.shadow=colorindexpicker
+    //%mcl.shadow=colorindexpicker
+    //%ncl.shadow=colorindexpicker
+    //%group="create"
+    //%weight=4
+    export function setCharFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string = "", StayChar: string = "", CharOnChar: string = "", CharSubW: string = "", twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
+        let gwid = Math.round(PngSheet.width / twid); let uig = image.create(twid, thei); let txi = 0; let tyi = 0;
         for (let tvn = 0; tvn < GroupChar.length; tvn++) {
             uig = image.create(twid, thei); txi = twid * (tvn % gwid); tyi = thei * Math.floor(tvn / gwid); drawTransparentImage(PngSheet, uig, 0 - txi, 0 - tyi); setCharecter(tid, GroupChar.charAt(tvn), uig, StayChar.includes(GroupChar.charAt(tvn)), CharOnChar.includes(GroupChar.charAt(tvn)), CharSubW.includes(GroupChar.charAt(tvn)), bcl, scl, mcl, ncl);
         }
@@ -276,17 +277,17 @@ namespace Renfont {
      * from charcter sheet
      * to the table
      */
-    //% blockid=renfont_setchararrfromimgsheet
-    //% block="set table id $tid and set img sheet $PngSheet=screen_image_picker with array of letters $GroupChar||and  array of staying letters $StayChar array of letters on the letters $CharOnChar and array of Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
-    //% tid.shadow=renfont_tablenameshadow
-    //% bcl.shadow=colorindexpicker
-    //% scl.shadow=colorindexpicker
-    //% mcl.shadow=colorindexpicker
-    //% ncl.shadow=colorindexpicker
-    //% group="create"
-    //% weight=6
-    export function setCharArrFromSheet(tid: number, PngSheet: Image = image.create(10, 16), GroupChar: string[] = [], StayChar: string[] = [], CharOnChar: string[] = [], CharSubW: string[] = [], twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
-        let gwid2 = Math.round(PngSheet.width / twid), uig2 = image.create(twid, thei), txi2 = 0, tyi2 = 0;
+    //%blockid=renfont_setchararrfromimgsheet
+    //%block="set |table id $tid and set img sheet $PngSheet=screen_image_picker with array of letters $GroupChar||and | array of staying letters $StayChar array of letters on the letters $CharOnChar and array of Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
+    //%tid.shadow=renfont_tablenameshadow
+    //%bcl.shadow=colorindexpicker
+    //%scl.shadow=colorindexpicker
+    //%mcl.shadow=colorindexpicker
+    //%ncl.shadow=colorindexpicker
+    //%group="create"
+    //%weight=6
+    export function setCharArrFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string[] = [], StayChar: string[] = [], CharOnChar: string[] = [], CharSubW: string[] = [], twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
+        let gwid2 = Math.round(PngSheet.width / twid); let uig2 = image.create(twid, thei); let txi2 = 0; let tyi2 = 0;
         for (let tvn2 = 0; tvn2 < GroupChar.length; tvn2++) {
             uig2 = image.create(twid, thei); txi2 = twid * (tvn2 % gwid2); tyi2 = thei * Math.floor(tvn2 / gwid2); drawTransparentImage(PngSheet, uig2, 0 - txi2, 0 - tyi2); setCharecter(tid, GroupChar[tvn2], uig2, StayChar.indexOf(GroupChar[tvn2]) >= 0, CharOnChar.indexOf(GroupChar[tvn2]) >= 0, CharSubW.indexOf(GroupChar[tvn2]) >= 0, bcl, scl, mcl, ncl);
         }
@@ -296,12 +297,12 @@ namespace Renfont {
      * read the length of
      * my charcter in table
      */
-    //% blockid=renfont_numofglyphs
-    //% block="number of glyphs in table id $gid"
-    //% gid.shadow=renfont_tablenameshadow
-    //% group="datainfo"
-    //% weight=2
-    export function numOfGlyphs(gid: number): number {
+    //%blockid=renfont_numofglyphs
+    //%block="number of glyphs in table id $gid"
+    //%gid.shadow=renfont_tablenameshadow
+    //%group="datainfo"
+    //%weight=2
+    export function numOfGlyphs(gid: string): number {
         let tid2 = gettableid(gid)
         return ligs[tid2].length
     }
@@ -310,12 +311,12 @@ namespace Renfont {
      * read the array charcter image
      * of my table
      */
-    //% blockid=renfont_arrofgypimg
-    //% block="array of glyph images in table id $gid"
-    //% gid.shadow=renfont_tablenameshadow
-    //% group="datainfo"
-    //% weight=4
-    export function imageArray(gid: number): Image[] {
+    //%blockid=renfont_arrofgypimg
+    //%block="array of glyph images in table id $gid"
+    //%gid.shadow=renfont_tablenameshadow
+    //%group="datainfo"
+    //%weight=4
+    export function imageArray(gid: string): Image[] {
         let tid3 = gettableid(gid)
         return ligages[tid3]
     }
@@ -324,29 +325,17 @@ namespace Renfont {
      * read the array charcter
      * of my table
      */
-    //% blockid=renfont_arrofglyphs
-    //% block="array of glyphs in table id $gid"
-    //% gid.shadow=renfont_tablenameshadow
-    //% group="datainfo"
-    //% weight=6
-    export function glyphArray(gid: number): String[] {
+    //%blockid=renfont_arrofglyphs
+    //%block="array of glyphs in table id $gid"
+    //%gid.shadow=renfont_tablenameshadow
+    //%group="datainfo"
+    //%weight=6
+    export function glyphArray(gid: string): String[] {
         let tid4 = gettableid(gid)
         return ligs[tid4]
     }
 
-    function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string) {
-        let lenfrom = fromchr.length, lento = tochr.length
-        if (curstr.substr(curidx, lento) == tochr) return true
-        if (curstr.substr(curidx, lenfrom) != fromchr) return false
-        while (curidx < curstr.length) {
-            curidx++
-            if (curstr.substr(curidx, lento) == tochr) return true
-            if (curstr.substr(curidx, lenfrom) != fromchr) return false
-        }
-        return false
-    }
-
-    function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
+    function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
         let tid5 = gettableid(lid)
         if (rendering) { if (arrm) { return [image.create(1, 1)] as Image[] } else { return image.create(1, 1) as Image } }
         rendering = true
@@ -584,15 +573,15 @@ namespace Renfont {
      * render text from my table
      * to the image
      */
-    //% blockid=renfont_setimgfromtext
-    //% block="create the image of text $input in page width $iwidt from table id $tid||and fill col $icol with outline $bcol and got alignment $alm gapwidth $spacew lineheight $lineh"
-    //% tid.shadow=renfont_tablenameshadow
-    //% alm.min=-1 alm.max=1 alm.defl=0
-    //% icol.shadow=colorindexpicker
-    //% bcol.shadow=colorindexpicker
-    //% group="render"
-    //% weight=4
-    export function setTextImage(input: string = "", iwidt: number, tid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
+    //%blockid=renfont_setimgfromtext
+    //%block="create the image of |text $input in page width $iwidt from table id $tid||and |fill col $icol with outline $bcol and got alignment $alm and get debugalm $debugalm"
+    //%tid.shadow=renfont_tablenameshadow
+    //%alm.min=-1 alm.max=1 alm.defl=0
+    //%icol.shadow=colorindexpicker
+    //%bcol.shadow=colorindexpicker
+    //%group="render"
+    //%weight=4
+    export function setTextImage(input: string = "", iwidt: number = 0, tid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
         return setTextImgValue(false, input, iwidt, tid, icol, bcol, alm, spacew, lineh) as Image
     }
 
@@ -601,15 +590,15 @@ namespace Renfont {
      * like basic text animation
      * to image array
      */
-    //% blockid=renfont_setimgframefromtext
-    //% block="create the image frame of text $input in page width $iwidt from table id $tid||and fill col $icol with outline $bcol and got alignment $alm gapwidth $spacew lineheight $lineh"
-    //% tid.shadow=renfont_tablenameshadow
-    //% alm.min=-1 alm.max=1 alm.defl=0
-    //% icol.shadow=colorindexpicker
-    //% bcol.shadow=colorindexpicker
-    //% group="render"
-    //% weight=2
-    export function setTextImageArray(input: string = "", iwidt: number, tid: number, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
+    //%blockid=renfont_setimgframefromtext
+    //%block="create the image frame of |text $input in page width $iwidt from table id $tid||and |fill col $icol with outline $bcol and got alignment $alm and get debugalm $debugalm"
+    //%tid.shadow=renfont_tablenameshadow
+    //%alm.min=-1 alm.max=1 alm.defl=0
+    //%icol.shadow=colorindexpicker
+    //%bcol.shadow=colorindexpicker
+    //%group="render"
+    //%weight=2
+    export function setTextImageArray(input: string = "", iwidt: number = 0, tid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
         return setTextImgValue(true, input, iwidt, tid, icol, bcol, alm, spacew, lineh) as Image[]
     }
 
@@ -618,19 +607,19 @@ namespace Renfont {
      * and stamp to 
      * my dialog frame
      */
-    //% blockid=renfont_stamptexttoframe
-    //% block="StampStrImgToTheDialogFrame $Fimg=dialog_image_picker Text $Txt Text width $Wval TableId $arrid||And text color col $ucol and outline $bcol Alignment $ualm gapwidth $spacew lineheight $lineh"
-    //% arrid.shadow=renfont_tablenameshadow
-    //% ualm.min=-1 ualm.max=1 ualm.defl=0
-    //% ucol.shadow=colorindexpicker
-    //% bcol.shadow=colorindexpicker
-    //% group="Dialog render"
-    //% weight=4
-    export function stampStrToDialog(Fimg: Image, Txt: string, Wval: number, arrid: number, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
+    //%blockid=renfont_stamptexttoframe
+    //%block="StampStrImgToTheDialogFrame $Fimg=dialog_image_picker Text $Txt Text width $Wval TableId $arrid||And text color col $ucol and outline $bcol Alignment $ualm"
+    //%arrid.shadow=renfont_tablenameshadow
+    //%ualm.min=-1 ualm.max=1 ualm.defl=0
+    //%ucol.shadow=colorindexpicker
+    //%bcol.shadow=colorindexpicker
+    //%group="Dialog render"
+    //%weight=4
+    export function stampStrToDialog(Fimg: Image, Txt: string = "", Wval: number = 0, arrid: string, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
         let StrImg: Image = setTextImage(Txt, Wval, arrid, ucol, bcol, ualm, spacew, lineh)
         let gapw = Math.floor(Fimg.width / 3)
         let gaph = Math.floor(Fimg.height / 3)
-        let UfImg: Image = SetImgFrame(Fimg, StrImg.width + ((gapw * 2) + Math.floor(gapw / 2)), StrImg.height + ((gaph * 2) + Math.floor(gaph / 2)))
+        let UfImg: Image = setImgFrame(Fimg, StrImg.width + ((gapw * 2) + Math.floor(gapw / 2)), StrImg.height + ((gaph * 2) + Math.floor(gaph / 2)))
         drawTransparentImage(StrImg.clone(), UfImg, gapw, gaph)
         return UfImg
     }
@@ -642,19 +631,19 @@ namespace Renfont {
      * my dialog frame
      * as image array
      */
-    //% blockid=renfont_stamptextarrtoframe
-    //% block="StampStrAnimToDialogFrame $Fimg=dialog_image_picker Text input $Txt In text width $Wval At table id $arrid||and text color $ucol with outline $bcol And alignment $ualm gapwidth $spacew lineheight $lineh"
-    //% arrid.shadow=renfont_tablenameshadow
-    //% ualm.min=-1 ualm.max=1 ualm.defl=0
-    //% ucol.shadow=colorindexpicker
-    //% bcol.shadow=colorindexpicker
-    //% group="Dialog render"
-    //% weight=2
-    export function stampStrArrToDialog(Fimg: Image, Txt: string, Wval: number, arrid: number, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
+    //%blockid=renfont_stamptextarrtoframe
+    //%block="StampStrAnimToDialogFrame $Fimg=dialog_image_picker Text input $Txt In text width $Wval At table id $arrid||and text color $ucol with outline $bcol And alignment $ualm "
+    //%arrid.shadow=renfont_tablenameshadow
+    //%ualm.min=-1 ualm.max=1 ualm.defl=0
+    //%ucol.shadow=colorindexpicker
+    //%bcol.shadow=colorindexpicker
+    //%group="Dialog render"
+    //%weight=2
+    export function stampStrArrToDialog(Fimg: Image, Txt: string = "", Wval: number = 0, arrid: string, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
         let StrImg2: Image[] = setTextImageArray(Txt, Wval, arrid, ucol, bcol, ualm, spacew, lineh)
         let gapw2 = Math.floor(Fimg.width / 3)
         let gaph2 = Math.floor(Fimg.height / 3)
-        let UfImg2: Image = SetImgFrame(Fimg, StrImg2[0].width + ((gapw2 * 2) + Math.floor(gapw2 / 2)), StrImg2[0].height + ((gaph2 * 2) + Math.floor(gaph2 / 2)))
+        let UfImg2: Image = setImgFrame(Fimg, StrImg2[0].width + ((gapw2 * 2) + Math.floor(gapw2 / 2)), StrImg2[0].height + ((gaph2 * 2) + Math.floor(gaph2 / 2)))
         let imgArr: Image[] = []
         let uimg: Image = null
         for (let mgi = 0; mgi < StrImg2.length; mgi++) {
@@ -668,44 +657,44 @@ namespace Renfont {
     /**
      * set the letterspace by value
      */
-    //% blockid=renfont_setletterspacing
-    //% block="set letter spacing to $input"
-    //% group="main property"
-    //% weight=8
-    export function setSpace(input: number) {
+    //%blockid=renfont_setletterspacing
+    //%block="set letter spacing to $input"
+    //%group="modify"
+    //%weight=8
+    export function SetSpace(input: number) {
         letterspace = input
     }
 
     /**
      * change the letterspace by value
      */
-    //% blockid=renfont_changeletterspacing
-    //% block="change letter spacing by $input"
-    //% group="main property"
-    //% weight=6
-    export function changeSpace(input: number) {
+    //%blockid=renfont_changeletterspacing
+    //%block="change letter spacing by $input"
+    //%group="modify"
+    //%weight=6
+    export function ChangeSpace(input: number) {
         letterspace += input
     }
 
     /**
      * set the line gap by value
      */
-    //% blockid=renfont_setlinegap
-    //% block="set line gap by $input"
-    //% group="main property"
-    //% weight=4
-    export function setLine(input: number) {
+    //%blockid=renfont_setlinegap
+    //%block="set line gap by $input"
+    //%group="modify"
+    //%weight=4
+    export function SetLine(input: number) {
         lineheight = input
     }
 
     /**
      * change the line gap by value
      */
-    //% blockid=renfont_changelinegap
-    //% block="change line gap by $input"
-    //% group="main property"
-    //% weight=2
-    export function changeLine(input: number) {
+    //%blockid=renfont_changelinegap
+    //%block="change line gap by $input"
+    //%group="modify"
+    //%weight=2
+    export function ChangeLine(input: number) {
         lineheight += input
     }
 
@@ -714,9 +703,9 @@ namespace Renfont {
     /**
      * get alignment value
      */
-    //% blockid=renfont_getalignmentval
-    //% block="get $alg of alignment"
-    //% group="main property"
+    //%blockid=renfont_getalignmentval
+    //%block="get $alg of alignment"
+    //%group="modify"
     export function getAlign(alg: align) {
         return alg
     }
@@ -727,16 +716,25 @@ namespace Renfont {
      * set charcter
      * from template
      */
-    //% blockid=renfont_presetfont
-    //% block="SetupPresetFont $tempf with table id $tid"
-    //% tid.shadow=renfont_tablenameshadow
-    //% group="create"
-    //% weight=10
-    export function SetupPresetFont(tempf: tempfont, tid: number) {
+    //%blockid=renfont_presetfont
+    //%block="SetupPresetFont $tempf with table id $tid"
+    //%tid.shadow=renfont_tablenameshadow
+    //%group="create"
+    //%weight=10
+    export function SetupPresetFont(tempf: tempfont, tid: string) {
         switch (tempf) {
-            case 1: default: _mainfont(tid); break;
-            case 2: _arcadefont(tid); break;
-            case 3: _latinmini(tid); break;
+            case 1:
+                _mainfont(tid)
+                break;
+            case 2:
+                _arcadefont(tid)
+                break;
+            case 3:
+                _latinmini(tid)
+                break;
+            default:
+                _mainfont(tid)
+                break;
         }
     }
 
@@ -751,15 +749,15 @@ namespace Renfont {
     /**
      * create the renfont as sprite
      */
-    //% blockid=renfont_sprite_create
+    //% blockid=fontren_sprite_create
     //% block="create renfont sprite as $Text in color $Col with outline $Bcol in alignment $alg and tableid $Tid||and page width $PageW"
-    //% Tid.shadow=renfont_tablenameshadow
+    //% Tid.shadow=fontren_tablenameshadow
     //% Col.shadow=colorindexpicker
     //% Bcol.shadow=colorindexpicker
     //% blockSetVariable="myRenfont"
     //% group="sprite mode"
     //% weight=22
-    export function createRenfontSprite(Text: string, Col: number, Bcol: number, alg: align, Tid: number, PageW: number = 0) {
+    export function createRenfontSprite(Text: string, Col: number, Bcol: number, alg: align, Tid: string, PageW: number = 0) {
         let renfontSprite = new RenfontSprite(Text, Col, Bcol, alg, Tid, PageW)
         renfontSprite.setKind(SpriteKind.Renfont)
         return renfontSprite
@@ -768,7 +766,7 @@ namespace Renfont {
     export class RenfontSprite extends Sprite {
         stxt: string
         scol: number
-        stid: number
+        stid: string
         stxw: number
         salg: number
         pagew: number
@@ -783,7 +781,7 @@ namespace Renfont {
         nimg: Image
         imgarr: Image[]
 
-        constructor(txt: string, tcol: number, bcol: number, alg: align, tid: number, pagew: number = 0) {
+        constructor(txt: string, tcol: number, bcol: number, alg: align, tid: string, pagew: number = 0) {
             super(image.create(0, 0))
             this.stxt = txt, this.scol = tcol, this.bcol = bcol, this.salg = alg, this.stid = tid, this.pagew = pagew
             this.spriteUpdate()
@@ -804,7 +802,7 @@ namespace Renfont {
          * get text data
          * from unifont sprite
          */
-        //% blockid=renfont_sprite_readtxt
+        //% blockid=fontren_sprite_readtxt
         //% block="get $this as text data"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -815,7 +813,7 @@ namespace Renfont {
          * set alignment as enum
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_setalign
+        //% blockid=fontren_sprite_setalign
         //% block=" $this=variables_get set align to $alg"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -830,7 +828,7 @@ namespace Renfont {
          * set alignment as number
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_setalignnum
+        //% blockid=fontren_sprite_setalignnum
         //% block=" $this set align value to $aln"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -845,7 +843,7 @@ namespace Renfont {
          * add or set dialog frame
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_setdialog
+        //% blockid=fontren_sprite_setdialog
         //% block=" $this set dialog frame to $DlImg=dialog_image_picker"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -860,7 +858,7 @@ namespace Renfont {
          * remove dialog frame
          * at unifont sprite
          */
-        //% blockid=renfont_sprite_cleardialog
+        //% blockid=fontren_sprite_cleardialog
         //% block=" $this clear dialog frame"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -875,7 +873,7 @@ namespace Renfont {
          * get text data
          * from unifont sprite
          */
-        //% blockid=renfont_sprite_readtxt
+        //% blockid=fontren_sprite_readtxt
         //% block="get $this as text data"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -888,7 +886,7 @@ namespace Renfont {
          * set gap space 
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_setlinespace
+        //% blockid=fontren_sprite_setlinespace
         //% block=" $this set $gaptype to $value"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -913,7 +911,7 @@ namespace Renfont {
          * clear gap space
          * at unifont sprite
          */
-        //% blockid=renfont_sprite_setdefaultlinespace
+        //% blockid=fontren_sprite_setdefaultlinespace
         //% block=" $this set $gaptype to default value"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -938,7 +936,7 @@ namespace Renfont {
          * set text to render
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_settextdata
+        //% blockid=fontren_sprite_settextdata
         //% block=" $this set text to $Text"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -953,7 +951,7 @@ namespace Renfont {
          * set text color index
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_settextcolor
+        //% blockid=fontren_sprite_settextcolor
         //% block=" $this set $colortexttype to $ncolor"
         //% this.shadow=variables_get this.defl=myRenfont
         //% ncolor.shadow=colorindexpicker
@@ -979,13 +977,13 @@ namespace Renfont {
          * set table id 
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_settableid
+        //% blockid=fontren_sprite_settableid
         //% block=" $this set Table id to $Tid"
-        //% Tid.shadow=renfont_tablenameshadow
+        //% Tid.shadow=fontren_tablenameshadow
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
         //% weight=3
-        set setSpriteTableId(Tid: number) {
+        set setSpriteTableId(Tid: string) {
             if (this.stid == Tid) return;
             this.stid = Tid;
             this.spriteUpdate();
@@ -995,7 +993,7 @@ namespace Renfont {
          * set page width
          * to unifont sprite
          */
-        //% blockid=renfont_sprite_setpagewidth
+        //% blockid=fontren_sprite_setpagewidth
         //% block=" $this set page width to $PageW"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -1012,7 +1010,7 @@ namespace Renfont {
          * play text animation
          * from unifont sprite
          */
-        //% blockid=renfont_sprite_playanimatiom
+        //% blockid=fontren_sprite_playanimatiom
         //% block=" $this get animation play for pause type $delaymode in (ms) $secval||and run Background $paused"
         //% secval.defl=100
         //% paused.shadow=toggleYesNo
@@ -1082,7 +1080,7 @@ namespace Renfont {
          * check unifont sprite
          * playing animation until done
          */
-        //% blockid=renfont_sprite_playanimisdone
+        //% blockid=fontren_sprite_playanimisdone
         //% block=" $this get animation is stop"
         //% this.shadow=variables_get this.defl=myRenfont
         //% group="sprite mode"
@@ -1090,6 +1088,5 @@ namespace Renfont {
         public animdone() {
             return !(this.anim)
         }
-
     }
 }
