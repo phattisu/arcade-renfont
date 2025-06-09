@@ -341,7 +341,10 @@ namespace Renfont {
     function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
         alm = Math.constrain(alm, -1, 1)
         let tid5 = gettableid(lid)
-        if (rendering) { if (arrm) { return [image.create(1, 1)] as Image[] } else { return image.create(1, 1) as Image } }
+        if (rendering) {
+            if (arrm) return [image.create(0, 0)] as Image[]
+            else return image.create(0, 0) as Image
+        }
         rendering = true
         if (lineh == undefined) { lineh = lineheight }
         if (spacew == undefined) { spacew = letterspace }
@@ -368,20 +371,20 @@ namespace Renfont {
                 } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
                     wie += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findCommand(input, "n", currentletter))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter + (curchar.length - 1) >= input.length - 1)) {
+                if ((iwidt <= 0 || !(findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter + (curchar.length - 1) >= input.length - 1)) {
                     wie += spacew
                 }
                 hvi = ligages[tid5][(ligs[tid5].indexOf(curchar))].height
             } else if (input.charAt(currentletter) == " ") {
-                if (iwidt > 0 && (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
                 else if (iwidt <= 0) wie += 3 * spacew
             } else {
-                if (iwidt > 0 && (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 2 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 2 * spacew
                 else if (iwidt <= 0) wie += 2 * spacew
             }
             uhei = Math.max(uhei, hvi), heig = Math.max(heig, hie + hvi)
             if (iwidt > 0) {
-                if (wie >= iwidt || findCommand(input, "n", currentletter)) {
+                if (wie >= iwidt || (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) {
                     if (uhei > hvi) {
                         hie += uhei
                     } else {
@@ -389,11 +392,11 @@ namespace Renfont {
                     }
                     hie += lineh
                     wie = 0;
-                    if (findCommand(input, "n", currentletter)) {
+                    if (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n")) {
                         currentletter += 2
                     }
                 }
-            } else if (findCommand(input, "n", currentletter)) {
+            } else if (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n")) {
                 currentletter += 2
             }
             if (curchar.length - 1 > 0) { currentletter += curchar.length - 1 }
@@ -422,28 +425,28 @@ namespace Renfont {
                 } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
                     wie += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findCommand(input, "n", currentletter2))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter2 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter2 + (curchar.length - 1) >= input.length - 1)) {
+                if ((iwidt <= 0 || !(findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter2 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter2 + (curchar.length - 1) >= input.length - 1)) {
                     wie += spacew
                 }
             } else if (input.charAt(currentletter2) == " ") {
-                if (iwidt > 0 && (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
                 else if (iwidt <= 0) wie += 3 * spacew
             } else {
-                if (iwidt > 0 && (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 2 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 2 * spacew
                 else if (iwidt <= 0) wie += 2 * spacew
             }
             if (false) { widt = Math.max(widt, wie) }
             if (iwidt > 0) {
-                if (wie >= iwidt || findCommand(input, "n", currentletter2)) {
+                if (wie >= iwidt || ( findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) {
                     widt = Math.max(widt, wie)
                     lnwit.push(wie); wie = 0; hix += 1
-                    if (findCommand(input, "n", currentletter2)) {
+                    if (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n")) {
                         currentletter2 += 2
                     }
                 } else {
                     widt = Math.max(widt, wie)
                 }
-            } else if (findCommand(input, "n", currentletter2)) {
+            } else if (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n")) {
                 widt = Math.max(widt, wie); currentletter2 += 2;
             } else {
                 widt = Math.max(widt, wie)
@@ -486,8 +489,8 @@ namespace Renfont {
                         }
                     }
                 }
-                if (wie < 0) { wie = Math.abs(wie) }
-                drawTransparentImage(rimg, limg, curwidt - ((nwidt - wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length-1):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
+                wie = Math.abs(wie)
+                drawTransparentImage(rimg, limg, curwidt - ((nwidt - wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
                 if (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1))))] == 0) {
                     swidt = uwidt
                 } else {
@@ -501,14 +504,14 @@ namespace Renfont {
                 } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
                     curwidt += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findCommand(input, "n", currentletter3))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter3 + (curchar.length - 1) >= input.length - 1)) {
+                if ((iwidt <= 0 || !(findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter3 + (curchar.length - 1) >= input.length - 1)) {
                     curwidt += spacew
                 }
             } else if (input.charAt(currentletter3) == " ") {
-                if (iwidt > 0 && (findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
                 else if (iwidt <= 0) curwidt += 3 * spacew
             } else {
-                if (iwidt > 0 && (findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 2 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 2 * spacew
                 else if (iwidt <= 0) curwidt += 2 * spacew
             }
             uhei = Math.max(uhei, hvi)
@@ -528,7 +531,7 @@ namespace Renfont {
             if (bcol > 0) { uuoutput = drawOutline(uuoutput.clone(), bcol, true) } else { uoutput = uuoutput.clone() }
             outputarr.push(uuoutput.clone())
             if (iwidt > 0) {
-                if (curwidt >= iwidt || findCommand(input, "n", currentletter3)) {
+                if (curwidt >= iwidt || (findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) {
                     if (alm < 0) {
                         drawTransparentImage(limg.clone(), output, 0, hie)
                     } else if (alm > 0) {
@@ -550,11 +553,11 @@ namespace Renfont {
                         hie += hvi
                     }
                     hie += lineh
-                    if (findCommand(input, "n", currentletter3) || input.charAt(currentletter3) == "\n") {
+                    if (findLetter(input, currentletter3, " ", "\\n") || input.charAt(currentletter3) == "\n") {
                         currentletter3 += 2
                     }
                 }
-            } else if (findCommand(input, "n", currentletter3) || input.charAt(currentletter3) == "\n") {
+            } else if (findLetter(input, currentletter3, " ", "\\n") || input.charAt(currentletter3) == "\n") {
                 currentletter3 += 2
             }
             if (curchar.length - 1 > 0) { currentletter3 += curchar.length - 1 }
@@ -748,13 +751,37 @@ namespace Renfont {
         }
     }
 
-    export enum thisDataNumType { Tcol = 1, Bcol = 2, PageW = 3, Talg = 4 }
+    export enum thisDataNumType {
+        //%block="solid color"
+        Tcol = 1,
+        //%block="outline color"
+        Bcol = 2,
+        //%block="page width"
+        PageW = 3,
+        //%block="alignment"
+        Talg = 4
+    }
 
-    export enum spacetype { letterspace = 1, lineheight = 2 }
+    export enum spacetype {
+        //%block="letter space"
+        letterspace = 1,
+        //%block="line height"
+        lineheight = 2
+    }
 
-    export enum colortype { solidcolor = 1, outlinecolor = 2 }
+    export enum colortype {
+        //%block="solid color"
+        solidcolor = 1,
+        //%block="outline color"
+        outlinecolor = 2
+    }
 
-    export enum delaytype { delaypermsec = 1, multisec = 2 }
+    export enum delaytype {
+        //%block="delay per milisecond"
+        delaypermsec = 1,
+        //%block="divide milisec"
+        divmsec = 2
+    }
 
     /**
      * create the renfont as Sprite
