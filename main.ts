@@ -25,13 +25,14 @@ namespace Renfont {
     }
 
     function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string) {
+        let curi = curidx
         let lenfrom = fromchr.length, lento = tochr.length
-        if (curstr.substr(curidx, lento) == tochr) return true
-        if (curstr.substr(curidx, lenfrom) != fromchr) return false
-        while (curidx < curstr.length) {
-            curidx++
-            if (curstr.substr(curidx, lento) == tochr) return true
-            if (curstr.substr(curidx, lenfrom) != fromchr) return false
+        if (curstr.substr(curi + (lento - ((curi % lento) + 1)), lento) == tochr) return true
+        if (curstr.substr(curi + (lenfrom - ((curi % lenfrom) + 1)), lenfrom) != fromchr) return false
+        while (curi < curstr.length) {
+            curi++
+            if (curstr.substr(curi + (lento - ((curi % lento) + 1)), lento) == tochr) return true
+            if (curstr.substr(curi + (lenfrom - ((curi % lenfrom) + 1)), lenfrom) != fromchr) return false
         }
         return false
     }
