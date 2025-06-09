@@ -1112,7 +1112,7 @@ namespace Renfont {
             animation.runImageAnimation(this, this.imgarr, this.scval, false)
             setTimeout(function () {
                 this.anim = false
-                this.setImage(this.nimg)
+                this.updateTextImage()
             }, lensec)
             if (pausev) pause(lensec);
         }
