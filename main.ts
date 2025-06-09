@@ -782,34 +782,34 @@ namespace Renfont {
         imgarr: Image[]
 
         protected spriteUpdate() {
-        if (!this) return;
-        if (this.sdim) {
-            this.nimg = stampStrToDialog(
-                this.sdim, 
-                this.stxt, 
-                this.pagew, 
-                this.stid, 
-                this.scol, 
-                this.bcol, 
-                this.salg, 
-                this.spacew, 
-                this.lineh
-            )
-        } else {
-            this.nimg = setTextImage(
-                this.stxt, 
-                this.pagew, 
-                this.stid, 
-                this.scol, 
-                this.bcol, 
-                this.salg, 
-                this.spacew, 
-                this.lineh
-            )
+            if (!this) return;
+            if (this.sdim) {
+                this.nimg = stampStrToDialog(
+                    this.sdim, 
+                    this.stxt, 
+                    this.pagew, 
+                    this.stid, 
+                    this.scol, 
+                    this.bcol, 
+                    this.salg, 
+                    this.spacew, 
+                    this.lineh
+                )
+            } else {
+                this.nimg = setTextImage(
+                    this.stxt, 
+                    this.pagew, 
+                    this.stid, 
+                    this.scol, 
+                    this.bcol, 
+                    this.salg, 
+                    this.spacew, 
+                    this.lineh
+                )
+            }
+            if (this.image.equals(this.nimg)) return;
+            this.setImage(this.nimg)
         }
-        if (this.image.equals(this.nimg)) return;
-        this.setImage(this.nimg)
-       }
 
         constructor(txt: string, scol: number, bcol: number, alg: align, tid: string, pagew: number) {
             super(setTextImage(
@@ -833,7 +833,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=18
-        get getSpriteText() {
+        public getSpriteText() {
             return this.stxt
         }
     
@@ -870,7 +870,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=14
-        set setSpriteAlign(alg: align) {
+        public setSpriteAlign(alg: align) {
             if (this.salg == getAlign(alg)) return;
             this.salg = getAlign(alg)
             this.spriteUpdate()
@@ -901,7 +901,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=10
-        set setSpriteDialogTxt(DlImg: Image) {
+        public setSpriteDialogTxt(DlImg: Image) {
             if (this.sdim && this.sdim.equals(DlImg)) return;
             this.sdim = DlImg
             this.spriteUpdate()
@@ -982,7 +982,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=20
-        set setSpriteText(Text: string) {
+        public setSpriteText(Text: string) {
             if (this.stxt == Text) return;
             this.stxt = Text
             this.spriteUpdate()
@@ -1123,7 +1123,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=1
-        get animdone() {
+        public animdone() {
             return !(this.anim)
         }
     }
