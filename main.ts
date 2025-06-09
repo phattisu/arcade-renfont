@@ -1061,6 +1061,7 @@ namespace Renfont {
         //%blockid=renfont_Sprite_playanimatiom
         //%block=" $this get animation play for pause type $delaymode in (ms) $secval||and paused $pausev"
         //%secval.defl=100
+        //%pausev.shadow=toggleYesNo
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=2
