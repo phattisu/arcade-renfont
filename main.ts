@@ -341,6 +341,7 @@ namespace Renfont {
     }
 
     function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
+        alm = Math.constrain(alm, -1, 1)
         let tid5 = gettableid(lid)
         if (rendering) { if (arrm) { return [image.create(1, 1)] as Image[] } else { return image.create(1, 1) as Image } }
         rendering = true
@@ -842,7 +843,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=18
-        public getSpriteText() {
+        public getText() {
             return this.stxt
         }
     
@@ -855,7 +856,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=16
-        public getSpriteTextData(NumType: thisDataNumType) {
+        public getTextData(NumType: thisDataNumType) {
             switch (NumType) {
                 case 1:
                     return this.scol;
@@ -879,7 +880,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=14
-        public setSpriteAlign(alg: align) {
+        public setAlign(alg: align) {
             if (this.salg == getAlign(alg)) return;
             this.salg = getAlign(alg)
             this.updateTextImage()
@@ -894,7 +895,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=12
-        public setSpriteAlignNum(aln: number = 0) {
+        public setAlignNum(aln: number = 0) {
             aln = Math.constrain(aln, -1, 1)
             if (this.salg == aln) return;
             this.salg = aln
@@ -910,7 +911,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=10
-        public setSpriteDialogTxt(DlImg: Image) {
+        public setDialogTxt(DlImg: Image) {
             if (this.sdim && this.sdim.equals(DlImg)) return;
             this.sdim = DlImg
             this.updateTextImage()
@@ -991,7 +992,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=20
-        public setSpriteText(Text: string) {
+        public setText(Text: string) {
             if (this.stxt == Text) return;
             this.stxt = Text
             this.updateTextImage()
@@ -1007,7 +1008,7 @@ namespace Renfont {
         //%ncolor.shadow=colorindexpicker
         //%group="Sprite mode"
         //%weight=6
-        public setSpriteTextCol(colortexttype: colortype, ncolor: number = 0) {
+        public setTextColor(colortexttype: colortype, ncolor: number = 0) {
             switch (colortexttype) {
                 case 1:
                     if (this.scol == ncolor) return;
@@ -1033,7 +1034,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=3
-        public setSpriteTableId(Tid: string) {
+        public setTableId(Tid: string) {
             if (this.stid == Tid) return;
             this.stid = Tid
             this.updateTextImage()
@@ -1048,7 +1049,7 @@ namespace Renfont {
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=4
-        public setSpritePageWidth(PageW: number = 0) {
+        public setPageWidth(PageW: number = 0) {
             if (this.pagew == PageW) return;
             this.pagew = PageW
             this.updateTextImage()
@@ -1059,13 +1060,13 @@ namespace Renfont {
          * from renfont Sprite
          */
         //%blockid=renfont_Sprite_playanimatiom
-        //%block=" $this get animation play for pause type $delaymode in (ms) $secval||and paused $pausev"
+        //%block=" $this get animation play for (ms) $secval in $delaymode||and paused $pausev"
         //%secval.defl=100
         //%pausev.shadow=toggleYesNo
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=2
-        public getSpriteAnimPlay(delaymode: delaytype, secval: number, pausev: boolean = false) {
+        public getAnimPlay(secval: number, delaymode: delaytype, pausev: boolean = false) {
             if (this.anim) return;
             this.anim = true
             this.scval = 0
