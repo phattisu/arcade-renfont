@@ -9,7 +9,7 @@ namespace SpriteKind {
 //%weight=10
 namespace Renfont {
 
-    let rendering = false, tablename: string[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
+    let rendering = false, gapcount: number, tablename: string[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
 
     function gettableid(name: string) {
         if (tablename.indexOf(name) < 0) {
@@ -24,16 +24,17 @@ namespace Renfont {
         to.drawTransparentImage(src, x, y)
     }
 
-    function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string) {
-        let curi = curidx
+    function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string, static?: boolean) {
+        gapcount = 0
         let lenfrom = fromchr.length, lento = tochr.length
-        if (curstr.substr(curi + (lento - ((curi % lento) + 1)), lento) == tochr) return true
-        if (curstr.substr(curi + (lenfrom - ((curi % lenfrom) + 1)), lenfrom) != fromchr) return false
-        curi++
-        while (curi < curstr.length) {
-            if (curstr.substr(curi + (lento - ((curi % lento) + 1)), lento) == tochr) return true
-            if (curstr.substr(curi + (lenfrom - ((curi % lenfrom) + 1)), lenfrom) != fromchr) return false
-            curi++
+        if (curstr.substr(curidx, lento) == tochr) return true
+        if (curstr.substr(curidx, lenfrom) != fromchr) return false
+        if (static) return false
+        curidx++, gapcount++
+        while (curidx < curstr.length) {
+            if (curstr.substr(curidx, lento) == tochr) return true
+            if (curstr.substr(curidx, lenfrom) != fromchr) return false
+            curidx++, gapcount++
         }
         return false
     }
@@ -339,7 +340,7 @@ namespace Renfont {
     }
 
     function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
-        alm = Math.constrain(alm, -1, 1)
+        alm = Math.constrain(alm, -1, 1) , input = input.replaceAll("\\n" , "\n")
         let tid5 = gettableid(lid)
         if (rendering) {
             if (arrm) return [image.create(0, 0)] as Image[]
@@ -392,12 +393,16 @@ namespace Renfont {
                     }
                     hie += lineh
                     wie = 0;
-                    if (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n")) {
-                        currentletter += 2
+                    if (findLetter(input, currentletter, " ", "\\n")) {
+                        currentletter += gapcount
+                    } else if( findLetter(input, currentletter, " ", "\n")) {
+                        currentletter += gapcount
                     }
                 }
-            } else if (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n")) {
-                currentletter += 2
+            } else if (findLetter(input, currentletter, " ", "\\n")) {
+                currentletter += gapcount
+            } else if (findLetter(input, currentletter, " ", "\n")) {
+                currentletter += gapcount
             }
             if (curchar.length - 1 > 0) { currentletter += curchar.length - 1 }
         }
@@ -440,14 +445,18 @@ namespace Renfont {
                 if (wie >= iwidt || ( findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) {
                     widt = Math.max(widt, wie)
                     lnwit.push(wie); wie = 0; hix += 1
-                    if (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n")) {
-                        currentletter2 += 2
+                    if (findLetter(input, currentletter2, " ", "\\n")) {
+                        currentletter2 += gapcount
+                    } else if (findLetter(input, currentletter2, " ", "\n")) {
+                        currentletter2 += gapcount
                     }
                 } else {
                     widt = Math.max(widt, wie)
                 }
-            } else if (findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n")) {
-                widt = Math.max(widt, wie); currentletter2 += 2;
+            } else if (findLetter(input, currentletter2, " ", "\\n", true)) {
+                widt = Math.max(widt, wie); currentletter2 += gapcount;
+            } else if (findLetter(input, currentletter2, " ", "\n", true)) {
+                widt = Math.max(widt, wie); currentletter2 += gapcount;
             } else {
                 widt = Math.max(widt, wie)
             }
@@ -490,7 +499,7 @@ namespace Renfont {
                     }
                 }
                 wie = Math.abs(wie)
-                drawTransparentImage(rimg, limg, curwidt - ((nwidt - wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
+                drawTransparentImage(rimg, limg, curwidt - ((nwidt + wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
                 if (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1))))] == 0) {
                     swidt = uwidt
                 } else {
@@ -553,12 +562,16 @@ namespace Renfont {
                         hie += hvi
                     }
                     hie += lineh
-                    if (findLetter(input, currentletter3, " ", "\\n") || input.charAt(currentletter3) == "\n") {
-                        currentletter3 += 2
+                    if (findLetter(input, currentletter3, " ", "\\n")) {
+                        currentletter3 += gapcount
+                    } else if(findLetter(input, currentletter3, " ", "\n")) {
+                        currentletter3 += gapcount
                     }
                 }
-            } else if (findLetter(input, currentletter3, " ", "\\n") || input.charAt(currentletter3) == "\n") {
-                currentletter3 += 2
+            } else if (findLetter(input, currentletter3, " ", "\\n")) {
+                currentletter3 += gapcount
+            } else if (findLetter(input, currentletter3, " ", "\n")) {
+                currentletter3 += gapcount
             }
             if (curchar.length - 1 > 0) { currentletter3 += curchar.length - 1 }
         }
