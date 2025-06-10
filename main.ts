@@ -1134,8 +1134,8 @@ namespace Renfont {
                     break;
                 case 2:
                     this.scval = secval / this.imgarr.length
-                    umsec = secval - 1
-                    lensec = secval - 1
+                    umsec = secval - 2
+                    lensec = secval - 2
                     break;
                 default:
                     return;
