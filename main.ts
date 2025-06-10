@@ -9,7 +9,7 @@ namespace SpriteKind {
 //%weight=10
 namespace Renfont {
 
-    let rendering = false, gapcount: number, tablename: string[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
+    let rendering = false, findLetter_gapCount: number, tablename: string[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
 
     function gettableid(name: string) {
         if (tablename.indexOf(name) < 0) {
@@ -19,22 +19,17 @@ namespace Renfont {
         return tablename.indexOf(name)
     }
 
-    function drawTransparentImage(src: Image, to: Image, x: number, y: number) {
-        if (!src || !to) return;
-        to.drawTransparentImage(src, x, y)
-    }
-
     function findLetter(curstr: string, curidx: number, fromchr: string, tochr: string, static?: boolean) {
-        gapcount = 0
+        findLetter_gapCount = 0
         let lenfrom = fromchr.length, lento = tochr.length
         if (curstr.substr(curidx, lento) == tochr) return true
         if (curstr.substr(curidx, lenfrom) != fromchr) return false
         if (static) return false
-        curidx++, gapcount++
+        curidx++, findLetter_gapCount++
         while (curidx < curstr.length) {
             if (curstr.substr(curidx, lento) == tochr) return true
             if (curstr.substr(curidx, lenfrom) != fromchr) return false
-            curidx++, gapcount++
+            curidx++, findLetter_gapCount++
         }
         return false
     }
@@ -77,9 +72,9 @@ namespace Renfont {
         }
         let Outputi = image.create(Inputi.width + 2, Inputi.height + 2)
         for (let curdir = 0; curdir < Math.min(dxl.length, dyl.length); curdir++) {
-            drawTransparentImage(Uinputi, Outputi, 1 + dxl[curdir], 1 + dyl[curdir])
+            Outputi.drawTransparentImage(Uinputi, 1 + dxl[curdir], 1 + dyl[curdir])
         }
-        drawTransparentImage(Inputi, Outputi, 1, 1)
+        Outputi.drawTransparentImage(Inputi, 1, 1)
         return Outputi
     }
 
@@ -94,7 +89,7 @@ namespace Renfont {
         for (let hj = 0; hj < 3; hj++) {
             for (let wi = 0; wi < 3; wi++) {
                 Uimg = image.create(Twidt, Theig)
-                drawTransparentImage(ImgF, Uimg, 0 - wi * Twidt, 0 - hj * Theig)
+                Uimg.drawTransparentImage(ImgF, 0 - wi * Twidt, 0 - hj * Theig)
                 ImgTable.push(Uimg.clone())
             }
         }
@@ -103,32 +98,32 @@ namespace Renfont {
                 sw = Math.min(wi2 * Twidt, Wh - Twidt)
                 sh = Math.min(hj2 * Theig, Ht - Theig)
                 if (hj2 == 0 && wi2 == 0) {
-                    drawTransparentImage(ImgTable[0], ImgOutput, sw, sh)
+                    ImgOutput.drawTransparentImage(ImgTable[0], sw, sh)
                 } else if (hj2 == Math.floor(Ht / Theig) - 1 && wi2 == Math.floor(Wh / Twidt) - 1) {
-                    drawTransparentImage(ImgTable[8], ImgOutput, sw, sh)
+                    ImgOutput.drawTransparentImage(ImgTable[8], sw, sh)
                 } else if (hj2 == Math.floor(Ht / Theig) - 1 && wi2 == 0) {
-                    drawTransparentImage(ImgTable[6], ImgOutput, sw, sh)
+                    ImgOutput.drawTransparentImage(ImgTable[6], sw, sh)
                 } else if (hj2 == 0 && wi2 == Math.floor(Wh / Twidt) - 1) {
-                    drawTransparentImage(ImgTable[2], ImgOutput, sw, sh)
+                    ImgOutput.drawTransparentImage(ImgTable[2], sw, sh)
                 } else {
                     if (wi2 > 0 && wi2 < Math.floor(Wh / Twidt) - 1) {
                         if (hj2 == 0) {
-                            drawTransparentImage(ImgTable[1], ImgOutput, sw, sh)
+                            ImgOutput.drawTransparentImage(ImgTable[1], sw, sh)
                         } else if (hj2 == Math.floor(Ht / Theig) - 1) {
-                            drawTransparentImage(ImgTable[7], ImgOutput, sw, sh)
+                            ImgOutput.drawTransparentImage(ImgTable[7], sw, sh)
                         } else {
-                            drawTransparentImage(ImgTable[4], ImgOutput, sw, sh)
+                            ImgOutput.drawTransparentImage(ImgTable[4], sw, sh)
                         }
                     } else if (hj2 > 0 && hj2 < Math.floor(Ht / Theig) - 1) {
                         if (wi2 == 0) {
-                            drawTransparentImage(ImgTable[3], ImgOutput, sw, sh)
+                            ImgOutput.drawTransparentImage(ImgTable[3], sw, sh)
                         } else if (wi2 == Math.floor(Wh / Twidt) - 1) {
-                            drawTransparentImage(ImgTable[5], ImgOutput, sw, sh)
+                            ImgOutput.drawTransparentImage(ImgTable[5], sw, sh)
                         } else {
-                            drawTransparentImage(ImgTable[4], ImgOutput, sw, sh)
+                            ImgOutput.drawTransparentImage(ImgTable[4], sw, sh)
                         }
                     } else {
-                        drawTransparentImage(ImgTable[4], ImgOutput, sw, sh)
+                        ImgOutput.drawTransparentImage(ImgTable[4], sw, sh)
                     }
                 }
             }
@@ -272,7 +267,7 @@ namespace Renfont {
     export function setCharFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string = "", StayChar: string = "", CharOnChar: string = "", CharSubW: string = "", twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
         let gwid = Math.round(PngSheet.width / twid), uig = image.create(twid, thei), txi = 0, tyi = 0;
         for (let tvn = 0; tvn < GroupChar.length; tvn++) {
-            uig = image.create(twid, thei); txi = twid * (tvn % gwid); tyi = thei * Math.floor(tvn / gwid); drawTransparentImage(PngSheet, uig, 0 - txi, 0 - tyi); setCharecter(tid, GroupChar.charAt(tvn), uig, StayChar.includes(GroupChar.charAt(tvn)), CharOnChar.includes(GroupChar.charAt(tvn)), CharSubW.includes(GroupChar.charAt(tvn)), bcl, scl, mcl, ncl);
+            uig = image.create(twid, thei); txi = twid * (tvn % gwid); tyi = thei * Math.floor(tvn / gwid); uig.drawTransparentImage(PngSheet, 0 - txi, 0 - tyi); setCharecter(tid, GroupChar.charAt(tvn), uig, StayChar.includes(GroupChar.charAt(tvn)), CharOnChar.includes(GroupChar.charAt(tvn)), CharSubW.includes(GroupChar.charAt(tvn)), bcl, scl, mcl, ncl);
         }
     }
 
@@ -293,7 +288,7 @@ namespace Renfont {
     export function setCharArrFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string[] = [], StayChar: string[] = [], CharOnChar: string[] = [], CharSubW: string[] = [], twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
         let gwid2 = Math.round(PngSheet.width / twid), uig2 = image.create(twid, thei), txi2 = 0, tyi2 = 0;
         for (let tvn2 = 0; tvn2 < GroupChar.length; tvn2++) {
-            uig2 = image.create(twid, thei); txi2 = twid * (tvn2 % gwid2); tyi2 = thei * Math.floor(tvn2 / gwid2); drawTransparentImage(PngSheet, uig2, 0 - txi2, 0 - tyi2); setCharecter(tid, GroupChar[tvn2], uig2, StayChar.indexOf(GroupChar[tvn2]) >= 0, CharOnChar.indexOf(GroupChar[tvn2]) >= 0, CharSubW.indexOf(GroupChar[tvn2]) >= 0, bcl, scl, mcl, ncl);
+            uig2 = image.create(twid, thei); txi2 = twid * (tvn2 % gwid2); tyi2 = thei * Math.floor(tvn2 / gwid2); uig2.drawTransparentImage(PngSheet, 0 - txi2, 0 - tyi2); setCharecter(tid, GroupChar[tvn2], uig2, StayChar.indexOf(GroupChar[tvn2]) >= 0, CharOnChar.indexOf(GroupChar[tvn2]) >= 0, CharSubW.indexOf(GroupChar[tvn2]) >= 0, bcl, scl, mcl, ncl);
         }
     }
 
@@ -341,14 +336,14 @@ namespace Renfont {
 
     function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
         alm = Math.constrain(alm, -1, 1) , input = input.replaceAll("\\n" , "\n")
-        let tid5 = gettableid(lid)
+        let tid5 = gettableid(lid), overflow = false, overflows: boolean[] = []
         if (rendering) {
             if (arrm) return [image.create(0, 0)] as Image[]
             else return image.create(0, 0) as Image
         }
         rendering = true
-        if (lineh == undefined) { lineh = lineheight }
-        if (spacew == undefined) { spacew = letterspace }
+        if (lineh == undefined) lineh = lineheight
+        if (spacew == undefined) spacew = letterspace
         let curchar = "", curchar2 = "", uhei = 0, outputarr: Image[] = [], lnwit: number[] = [], heig = 0, widt = 0, curwidt = 0, uwidt = 0, swidt = 0, nwidt = 0, wie = 0, hie = 0, hvi = 0;
         for (let currentletter = 0; currentletter < input.length; currentletter++) {
             curchar = deepChar(tid5, currentletter, input)
@@ -372,20 +367,20 @@ namespace Renfont {
                 } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
                     wie += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter + (curchar.length - 1) >= input.length - 1)) {
+                if ((iwidt <= 0 || !(findLetter(input, currentletter, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter + (curchar.length - 1) >= input.length - 1)) {
                     wie += spacew
                 }
                 hvi = ligages[tid5][(ligs[tid5].indexOf(curchar))].height
             } else if (input.charAt(currentletter) == " ") {
-                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
                 else if (iwidt <= 0) wie += 3 * spacew
             } else {
-                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) wie += 2 * spacew
-                else if (iwidt <= 0) wie += 2 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
+                else if (iwidt <= 0) wie += 3 * spacew
             }
             uhei = Math.max(uhei, hvi), heig = Math.max(heig, hie + hvi)
             if (iwidt > 0) {
-                if (wie >= iwidt || (findLetter(input, currentletter, " ", "\\n") || findLetter(input, currentletter, " ", "\n"))) {
+                if (wie >= iwidt || (findLetter(input, currentletter, " ", "\n"))) {
                     if (uhei > hvi) {
                         hie += uhei
                     } else {
@@ -393,16 +388,12 @@ namespace Renfont {
                     }
                     hie += lineh
                     wie = 0;
-                    if (findLetter(input, currentletter, " ", "\\n")) {
-                        currentletter += gapcount
-                    } else if( findLetter(input, currentletter, " ", "\n")) {
-                        currentletter += gapcount
+                    if(findLetter(input, currentletter, " ", "\n")) {
+                        currentletter += findLetter_gapCount
                     }
                 }
-            } else if (findLetter(input, currentletter, " ", "\\n")) {
-                currentletter += gapcount
             } else if (findLetter(input, currentletter, " ", "\n")) {
-                currentletter += gapcount
+                currentletter += findLetter_gapCount
             }
             if (curchar.length - 1 > 0) { currentletter += curchar.length - 1 }
         }
@@ -430,33 +421,38 @@ namespace Renfont {
                 } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
                     wie += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter2 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter2 + (curchar.length - 1) >= input.length - 1)) {
+                if ((iwidt <= 0 || !(findLetter(input, currentletter2, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter2 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter2 + (curchar.length - 1) >= input.length - 1)) {
                     wie += spacew
                 }
             } else if (input.charAt(currentletter2) == " ") {
-                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
                 else if (iwidt <= 0) wie += 3 * spacew
             } else {
-                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) wie += 2 * spacew
-                else if (iwidt <= 0) wie += 2 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
+                else if (iwidt <= 0) wie += 3 * spacew
             }
-            if (false) { widt = Math.max(widt, wie) }
             if (iwidt > 0) {
-                if (wie >= iwidt || ( findLetter(input, currentletter2, " ", "\\n") || findLetter(input, currentletter2, " ", "\n"))) {
+                if (wie >= iwidt || (findLetter(input, currentletter2, " ", "\n"))) {
                     widt = Math.max(widt, wie)
+                    if (!findLetter(input, currentletter2, " ", "\n") && !overflow) {
+                        wie -= spacew * 3
+                        overflows.push(true)
+                        overflow = true
+                    } else if (findLetter(input, currentletter2, " ", "\n") && overflow) {
+                        overflows.push(false)
+                        overflow = false
+                    } else {
+                        overflows.push(false)
+                    }
                     lnwit.push(wie); wie = 0; hix += 1
-                    if (findLetter(input, currentletter2, " ", "\\n")) {
-                        currentletter2 += gapcount
-                    } else if (findLetter(input, currentletter2, " ", "\n")) {
-                        currentletter2 += gapcount
+                    if (findLetter(input, currentletter2, " ", "\n")) {
+                        currentletter2 += findLetter_gapCount
                     }
                 } else {
                     widt = Math.max(widt, wie)
                 }
-            } else if (findLetter(input, currentletter2, " ", "\\n", true)) {
-                widt = Math.max(widt, wie); currentletter2 += gapcount;
             } else if (findLetter(input, currentletter2, " ", "\n", true)) {
-                widt = Math.max(widt, wie); currentletter2 += gapcount;
+                widt = Math.max(widt, wie); currentletter2 += findLetter_gapCount;
             } else {
                 widt = Math.max(widt, wie)
             }
@@ -499,7 +495,7 @@ namespace Renfont {
                     }
                 }
                 wie = Math.abs(wie)
-                drawTransparentImage(rimg, limg, curwidt - ((nwidt + wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
+                limg.drawTransparentImage(rimg, curwidt - ((nwidt + wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
                 if (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1))))] == 0) {
                     swidt = uwidt
                 } else {
@@ -513,24 +509,24 @@ namespace Renfont {
                 } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
                     curwidt += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter3 + (curchar.length - 1) >= input.length - 1)) {
+                if ((iwidt <= 0 || !(findLetter(input, currentletter3, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter3 + (curchar.length - 1) >= input.length - 1)) {
                     curwidt += spacew
                 }
             } else if (input.charAt(currentletter3) == " ") {
-                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
                 else if (iwidt <= 0) curwidt += 3 * spacew
             } else {
-                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) curwidt += 2 * spacew
-                else if (iwidt <= 0) curwidt += 2 * spacew
+                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
+                else if (iwidt <= 0) curwidt += 3 * spacew
             }
             uhei = Math.max(uhei, hvi)
             uuoutput = output.clone()
             if (alm < 0) {
-                drawTransparentImage(limg.clone(), uuoutput, 0, hie)
+                uuoutput.drawTransparentImage(limg.clone(), 0, hie)
             } else if (alm > 0) {
-                drawTransparentImage(limg.clone(), uuoutput, Math.abs(output.width - Math.min(curwidt, limg.width)), hie)
+                uuoutput.drawTransparentImage(limg.clone(), Math.abs(output.width - Math.min(curwidt, limg.width)), hie)
             } else if (alm == 0) {
-                drawTransparentImage(limg.clone(), uuoutput, Math.abs((output.width / 2) - (Math.min(curwidt, limg.width) / 2)), hie)
+                uuoutput.drawTransparentImage(limg.clone(), Math.abs((output.width / 2) - (Math.min(curwidt, limg.width) / 2)), hie)
             }
             if (icol > 0) {
                 for (let ico = 1; ico < 16; ico++) {
@@ -540,13 +536,13 @@ namespace Renfont {
             if (bcol > 0) { uuoutput = drawOutline(uuoutput.clone(), bcol, true) } else { uoutput = uuoutput.clone() }
             outputarr.push(uuoutput.clone())
             if (iwidt > 0) {
-                if (curwidt >= iwidt || (findLetter(input, currentletter3, " ", "\\n") || findLetter(input, currentletter3, " ", "\n"))) {
+                if (curwidt >= iwidt || (findLetter(input, currentletter3, " ", "\n"))) {
                     if (alm < 0) {
-                        drawTransparentImage(limg.clone(), output, 0, hie)
+                        output.drawTransparentImage(limg.clone(), 0, hie)
                     } else if (alm > 0) {
-                        drawTransparentImage(limg.clone(), output, Math.abs(output.width - limg.width), hie)
+                        output.drawTransparentImage(limg.clone(), Math.abs(output.width - limg.width), hie)
                     } else if (alm == 0) {
-                        drawTransparentImage(limg.clone(), output, Math.abs((output.width / 2) - (limg.width / 2)), hie)
+                        output.drawTransparentImage(limg.clone(), Math.abs((output.width / 2) - (limg.width / 2)), hie)
                     }
                     if (icol > 0) {
                         for (let ico2 = 1; ico2 < 16; ico2++) {
@@ -556,31 +552,28 @@ namespace Renfont {
                     if (bcol > 0) { uoutput = drawOutline(output.clone(), bcol, true) } else { uoutput = output.clone() }
                     outputarr.push(uoutput.clone())
                     hgi += 1; limg = image.create(lnwit[hgi], heig); curwidt = 0;
+                    if (overflows[hgi]) curwidt -= 3 * spacew
                     if (uhei > hvi) {
                         hie += uhei
                     } else {
                         hie += hvi
                     }
                     hie += lineh
-                    if (findLetter(input, currentletter3, " ", "\\n")) {
-                        currentletter3 += gapcount
-                    } else if(findLetter(input, currentletter3, " ", "\n")) {
-                        currentletter3 += gapcount
+                    if(findLetter(input, currentletter3, " ", "\n")) {
+                        currentletter3 += findLetter_gapCount
                     }
                 }
-            } else if (findLetter(input, currentletter3, " ", "\\n")) {
-                currentletter3 += gapcount
             } else if (findLetter(input, currentletter3, " ", "\n")) {
-                currentletter3 += gapcount
+                currentletter3 += findLetter_gapCount
             }
             if (curchar.length - 1 > 0) { currentletter3 += curchar.length - 1 }
         }
         if (alm < 0) {
-            drawTransparentImage(limg.clone(), output, 0, hie)
+            output.drawTransparentImage(limg.clone(), 0, hie)
         } else if (alm > 0) {
-            drawTransparentImage(limg.clone(), output, Math.abs(output.width - limg.width), hie)
+            output.drawTransparentImage(limg.clone(), Math.abs(output.width - limg.width), hie)
         } else if (alm == 0) {
-            drawTransparentImage(limg.clone(), output, Math.abs((output.width / 2) - (limg.width / 2)), hie)
+            output.drawTransparentImage(limg.clone(), Math.abs((output.width / 2) - (limg.width / 2)), hie)
         }
         if (icol > 0) {
             for (let ico3 = 1; ico3 < 16; ico3++) {
@@ -646,7 +639,7 @@ namespace Renfont {
         let gapw = Math.floor(Fimg.width / 3)
         let gaph = Math.floor(Fimg.height / 3)
         let UfImg: Image = setImgFrame(Fimg, StrImg.width + ((gapw * 2) + Math.floor(gapw / 2)), StrImg.height + ((gaph * 2) + Math.floor(gaph / 2)))
-        drawTransparentImage(StrImg.clone(), UfImg, gapw, gaph)
+        UfImg.drawTransparentImage(StrImg.clone(), gapw, gaph)
         return UfImg
     }
 
@@ -674,7 +667,7 @@ namespace Renfont {
         let uimg: Image = null
         for (let mgi = 0; mgi < StrImg2.length; mgi++) {
             uimg = UfImg2.clone()
-            drawTransparentImage(StrImg2[mgi].clone(), uimg, gapw2, gaph2)
+            uimg.drawTransparentImage(StrImg2[mgi].clone(), gapw2, gaph2)
             imgArr.push(uimg)
         }
         return imgArr
