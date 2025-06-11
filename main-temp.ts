@@ -1,4 +1,3 @@
-
 namespace Renfont {
 
     export function _mainfont(tid: string = "fonttemp") {

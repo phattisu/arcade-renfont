@@ -5,15 +5,14 @@ namespace SpriteKind {
 //%block="RenFont"
 //%color="#12d48a" 
 //%icon="\uf031"
-//%group="[Sprites, Text, Images]"
-//%weight=10
+//%group="[sprites, text, images, animation]"
 namespace Renfont {
 
-    let rendering = false, findLetter_gapCount: number, tablename: string[] = [], ligs: string[][] = [], ligages: Image[][] = [], ligwidth: number[][] = [], ligsubw: number[][] = [], ligdir: number[][] = [], ligcol: number[][] = [], ligul: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, lineheight: number = 1;
+    let rendering = false, findLetter_gapCount: number, tablename: string[] = [], ligs: string[][] = [], ligGlyphImages: Image[][] = [], ligWidths: number[][] = [], ligSubWidths: number[][] = [], ligDirYs: number[][] = [], ligsolidColors: number[][] = [], ligSubColors: number[][] = [], storeid: number[] = [], letterspace: number = 1, curid: number = 0, linespace: number = 1;
 
     function gettableid(name: string) {
         if (tablename.indexOf(name) < 0) {
-            tablename.push(name); storeid.push(curid); ligs.push([]); ligages.push([]); ligwidth.push([]); ligsubw.push([]); ligdir.push([]); ligcol.push([]); ligul.push([]); curid += 1;
+            tablename.push(name); storeid.push(curid); ligs.push([]); ligGlyphImages.push([]); ligWidths.push([]); ligSubWidths.push([]); ligDirYs.push([]); ligsolidColors.push([]); ligSubColors.push([]); curid += 1;
             return tablename.length - 1
         }
         return tablename.indexOf(name)
@@ -41,13 +40,13 @@ namespace Renfont {
         return false
     }
 
-    function deepChar(tid: number = 0, idx: number = 0, charstr: string = "", reverse: boolean = false) {
+    function deepChar(tableId: number = 0, idx: number = 0, charstr: string = "", reverse: boolean = false) {
         let ustr = charstr.charAt(idx)
         let ic = 1
         let uc = charstr.charAt(idx + (reverse?-ic:ic))
         let istr = ustr + uc
-        if (ligs[tid].indexOf(istr) < 0) return ustr
-        while (ligs[tid].indexOf(istr) >= 0) {
+        if (ligs[tableId].indexOf(istr) < 0) return ustr
+        while (ligs[tableId].indexOf(istr) >= 0) {
             if (reverse) ustr = uc + ustr
             else ustr += uc
             ic++
@@ -80,44 +79,44 @@ namespace Renfont {
 
     function setImgFrame(ImgF: Image, Wh: number, Ht: number) {
         let ImgOutput = image.create(Wh, Ht)
-        let Twidt = Math.floor(ImgF.width / 3)
-        let Theig = Math.floor(ImgF.height / 3)
+        let tileWidtht = Math.floor(ImgF.width / 3)
+        let tileHeightg = Math.floor(ImgF.height / 3)
         let ImgTable: Image[] = []
         let Uimg: Image = null
         let sw = 0
         let sh = 0
         for (let hj = 0; hj < 3; hj++) {
             for (let wi = 0; wi < 3; wi++) {
-                Uimg = image.create(Twidt, Theig)
-                Uimg.drawTransparentImage(ImgF, 0 - wi * Twidt, 0 - hj * Theig)
+                Uimg = image.create(tileWidtht, tileHeightg)
+                Uimg.drawTransparentImage(ImgF, 0 - wi * tileWidtht, 0 - hj * tileHeightg)
                 ImgTable.push(Uimg.clone())
             }
         }
-        for (let wi2 = 0; wi2 < Math.floor(Wh / Twidt); wi2++) {
-            for (let hj2 = 0; hj2 < Math.floor(Ht / Theig); hj2++) {
-                sw = Math.min(wi2 * Twidt, Wh - Twidt)
-                sh = Math.min(hj2 * Theig, Ht - Theig)
+        for (let wi2 = 0; wi2 < Math.floor(Wh / tileWidtht); wi2++) {
+            for (let hj2 = 0; hj2 < Math.floor(Ht / tileHeightg); hj2++) {
+                sw = Math.min(wi2 * tileWidtht, Wh - tileWidtht)
+                sh = Math.min(hj2 * tileHeightg, Ht - tileHeightg)
                 if (hj2 == 0 && wi2 == 0) {
                     ImgOutput.drawTransparentImage(ImgTable[0], sw, sh)
-                } else if (hj2 == Math.floor(Ht / Theig) - 1 && wi2 == Math.floor(Wh / Twidt) - 1) {
+                } else if (hj2 == Math.floor(Ht / tileHeightg) - 1 && wi2 == Math.floor(Wh / tileWidtht) - 1) {
                     ImgOutput.drawTransparentImage(ImgTable[8], sw, sh)
-                } else if (hj2 == Math.floor(Ht / Theig) - 1 && wi2 == 0) {
+                } else if (hj2 == Math.floor(Ht / tileHeightg) - 1 && wi2 == 0) {
                     ImgOutput.drawTransparentImage(ImgTable[6], sw, sh)
-                } else if (hj2 == 0 && wi2 == Math.floor(Wh / Twidt) - 1) {
+                } else if (hj2 == 0 && wi2 == Math.floor(Wh / tileWidtht) - 1) {
                     ImgOutput.drawTransparentImage(ImgTable[2], sw, sh)
                 } else {
-                    if (wi2 > 0 && wi2 < Math.floor(Wh / Twidt) - 1) {
+                    if (wi2 > 0 && wi2 < Math.floor(Wh / tileWidtht) - 1) {
                         if (hj2 == 0) {
                             ImgOutput.drawTransparentImage(ImgTable[1], sw, sh)
-                        } else if (hj2 == Math.floor(Ht / Theig) - 1) {
+                        } else if (hj2 == Math.floor(Ht / tileHeightg) - 1) {
                             ImgOutput.drawTransparentImage(ImgTable[7], sw, sh)
                         } else {
                             ImgOutput.drawTransparentImage(ImgTable[4], sw, sh)
                         }
-                    } else if (hj2 > 0 && hj2 < Math.floor(Ht / Theig) - 1) {
+                    } else if (hj2 > 0 && hj2 < Math.floor(Ht / tileHeightg) - 1) {
                         if (wi2 == 0) {
                             ImgOutput.drawTransparentImage(ImgTable[3], sw, sh)
-                        } else if (wi2 == Math.floor(Wh / Twidt) - 1) {
+                        } else if (wi2 == Math.floor(Wh / tileWidtht) - 1) {
                             ImgOutput.drawTransparentImage(ImgTable[5], sw, sh)
                         } else {
                             ImgOutput.drawTransparentImage(ImgTable[4], sw, sh)
@@ -145,17 +144,17 @@ namespace Renfont {
      * add charcter glyph to the table
      */
     //%blockid=renfont_setcharecter
-    //%block="set |table id $gid and set letter $glyph to img $imgi=screen_image_picker||and |the letter can move? $notmove and stay on or under the letter? $onthechar and substract width $inchar erase col $bcol spacebar col $scol base col $mcol guard col $ncol"
-    //%gid.shadow=renfont_tablenameshadow
-    //%bcol.shadow=colorindexpicker
-    //%scol.shadow=colorindexpicker
-    //%mcol.shadow=colorindexpicker
-    //%ncol.shadow=colorindexpicker
+    //%block="set |table id $tableKey and set letter $glyph to img $imgi=screen_image_picker||and |the letter can move? $notmove and stay on or under the letter? $onthechar and substract width $inchar erase col $eraseColor spacebar col $spaceColor base col $solidColor guard col $subColor"
+    //%tableKey.shadow=renfont_tablenameshadow
+    //%outlineColor.shadow=colorindexpicker
+    //%spaceColor.shadow=colorindexpicker
+    //%eraseColor.shadow=colorindexpicker
+    //%subColor.shadow=colorindexpicker
     //%group="create"
     //%weight=2
-    export function setCharecter(gid: string, glyph: string = "", imgi: Image = image.create(5, 8), notmove: boolean = false, onthechar: boolean = false, inchar: boolean = false, bcol: number = 0, scol: number = 0, mcol: number = 0, ncol: number = 0) {
-        let tid = gettableid(gid), sncol = true, scnwidt = true, scwidt = false, wi3 = 0, wj = 0, si = 0;
-        if (bcol > 0 && bcol < 16) imgi.replace(bcol, 0)
+    export function setCharecter(tableKey: string, glyph: string = "", imgi: Image = image.create(5, 8), notmove: boolean = false, onthechar: boolean = false, inchar: boolean = false, eraseColor: number = 0, spaceColor: number = 0, solidColor: number = 0, subColor: number = 0) {
+        let tableId = gettableid(tableKey), scnwidt = true, scwidt = false, wi3 = 0, wj = 0, si = 0;
+        if (eraseColor > 0 && eraseColor < 16) imgi.replace(eraseColor, 0)
         let uimg = imgi.clone()
         let start = false, stop = false
         let bufv = pins.createBuffer(uimg.height), count = [], i = 0, x0 = 0, x1 = imgi.width, y0 = 0, y1 = imgi.height
@@ -163,9 +162,9 @@ namespace Renfont {
             count = []
             for (i = 0; x + i < uimg.width; i++) {
                 uimg.getRows(x + i, bufv)
-                let sumif = bufv.toArray(NumberFormat.UInt8LE).filter(val => (val == mcol)).length
-                sumif += bufv.toArray(NumberFormat.UInt8LE).filter(val => (val == ncol && ncol > 0)).length
-                sumif += bufv.toArray(NumberFormat.UInt8LE).filter(val => (val == scol && scol > 0)).length
+                let sumif = bufv.toArray(NumberFormat.UInt8LE).filter(val => (val == solidColor)).length
+                sumif += bufv.toArray(NumberFormat.UInt8LE).filter(val => (val == subColor && subColor > 0)).length
+                sumif += bufv.toArray(NumberFormat.UInt8LE).filter(val => (val == spaceColor && spaceColor > 0)).length
                 count.push(sumif)
                 if ((stop && (count[i - 1] > 0 && count[i] <= 0)) || (!stop && (start && count[i] <= 0) || (!start && count[i] > 0))) break;
             }
@@ -205,152 +204,145 @@ namespace Renfont {
             if (true) uwid = wj
         }
 
-        if (ligs[tid].indexOf(glyph) < 0) {
-            ligul[tid].push(ncol)
-            ligcol[tid].push(mcol)
-            ligs[tid].push(glyph); ligages[tid].push(imgj);
+        if (ligs[tableId].indexOf(glyph) < 0) {
+            ligSubColors[tableId].push(subColor)
+            ligsolidColors[tableId].push(solidColor)
+            ligs[tableId].push(glyph); ligGlyphImages[tableId].push(imgj);
             if (notmove) {
                 if (onthechar) {
-                    ligdir[tid].push(10)
+                    ligDirYs[tableId].push(10)
                 } else {
-                    ligdir[tid].push(-10)
+                    ligDirYs[tableId].push(-10)
                 }
-                ligwidth[tid].push(0)
-                ligsubw[tid].push(0)
+                ligWidths[tableId].push(0)
+                ligSubWidths[tableId].push(0)
             } else {
                 if (uwid == 0) {
-                    ligsubw[tid].push(imgj.width)
+                    ligSubWidths[tableId].push(imgj.width)
                 } else {
-                    ligsubw[tid].push(uwid)
+                    ligSubWidths[tableId].push(uwid)
                 }
-                ligwidth[tid].push(imgj.width)
-                ligdir[tid].push(0)
+                ligWidths[tableId].push(imgj.width)
+                ligDirYs[tableId].push(0)
             }
         } else {
-            ligul[tid][ligs[tid].indexOf(glyph)] = ncol
-            ligcol[tid][ligs[tid].indexOf(glyph)] = mcol
-            ligages[tid][ligs[tid].indexOf(glyph)] = imgj
+            ligSubColors[tableId][ligs[tableId].indexOf(glyph)] = subColor
+            ligsolidColors[tableId][ligs[tableId].indexOf(glyph)] = solidColor
+            ligGlyphImages[tableId][ligs[tableId].indexOf(glyph)] = imgj
             if (notmove) {
                 if (onthechar) {
-                    ligdir[tid][ligs[tid].indexOf(glyph)] = 10
+                    ligDirYs[tableId][ligs[tableId].indexOf(glyph)] = 10
                 } else {
-                    ligdir[tid][ligs[tid].indexOf(glyph)] = -10
+                    ligDirYs[tableId][ligs[tableId].indexOf(glyph)] = -10
                 }
-                ligwidth[tid][ligs[tid].indexOf(glyph)] = 0
-                ligsubw[tid][ligs[tid].indexOf(glyph)] = 0
+                ligWidths[tableId][ligs[tableId].indexOf(glyph)] = 0
+                ligSubWidths[tableId][ligs[tableId].indexOf(glyph)] = 0
             } else {
                 if (uwid == 0) {
-                    ligsubw[tid][ligs[tid].indexOf(glyph)] = imgj.width
+                    ligSubWidths[tableId][ligs[tableId].indexOf(glyph)] = imgj.width
                 } else {
-                    ligsubw[tid][ligs[tid].indexOf(glyph)] = uwid
+                    ligSubWidths[tableId][ligs[tableId].indexOf(glyph)] = uwid
                 }
-                ligwidth[tid][ligs[tid].indexOf(glyph)] = imgj.width
-                ligdir[tid][ligs[tid].indexOf(glyph)] = 0
+                ligWidths[tableId][ligs[tableId].indexOf(glyph)] = imgj.width
+                ligDirYs[tableId][ligs[tableId].indexOf(glyph)] = 0
             }
         }
     }
 
     /**
-     * add more glyph
-     * from charcter sheet
-     * to the table
+     * add more glyph from charcter sheet to the table
      */
     //%blockid=renfont_setcharfromimgsheet
-    //%block="set |table id $tid and set img sheet $PngSheet=screen_image_picker with letters $GroupChar||and |staying letters $StayChar letters on the letters $CharOnChar and Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
-    //%tid.shadow=renfont_tablenameshadow
-    //%bcl.shadow=colorindexpicker
-    //%scl.shadow=colorindexpicker
-    //%mcl.shadow=colorindexpicker
-    //%ncl.shadow=colorindexpicker
+    //%block="set |table id $tableKey and set img sheet $sheetImage=screen_image_picker with letters $currentChars||and |staying letters $stayingChars letters on the letters $stackedChars and Char Substact $substractedChars width $tileWidth height $tileHeight erase col $eraseColor space col $spaceColor base col $solidColor guard col $subColor"
+    //%tableKey.shadow=renfont_tablenameshadow
+    //%eraseColor.shadow=colorindexpicker
+    //%spaceColor.shadow=colorindexpicker
+    //%solidColor.shadow=colorindexpicker
+    //%subColor.shadow=colorindexpicker
     //%group="create"
     //%weight=4
-    export function setCharFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string = "", StayChar: string = "", CharOnChar: string = "", CharSubW: string = "", twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
-        let gwid = Math.round(PngSheet.width / twid), uig = image.create(twid, thei), txi = 0, tyi = 0;
-        for (let tvn = 0; tvn < GroupChar.length; tvn++) {
-            uig = image.create(twid, thei); txi = twid * (tvn % gwid); tyi = thei * Math.floor(tvn / gwid); uig.drawTransparentImage(PngSheet, 0 - txi, 0 - tyi); setCharecter(tid, GroupChar.charAt(tvn), uig, StayChar.includes(GroupChar.charAt(tvn)), CharOnChar.includes(GroupChar.charAt(tvn)), CharSubW.includes(GroupChar.charAt(tvn)), bcl, scl, mcl, ncl);
+    export function setCharFromSheet(tableKey: string, sheetImage: Image = image.create(10, 16), currentChars: string = "", stayingChars: string = "", stackedChars: string = "", substractedChars: string = "", tileWidth: number = 5, tileHeight: number = 8, eraseColor: number = 0, spaceColor: number = 0, solidColor: number = 0, subColor: number = 0) {
+        const sheetColumn = Math.round(sheetImage.width / tileWidth)
+        for (let tileIndex = 0; tileIndex < currentChars.length; tileIndex++) {
+            const unitImage = image.create(tileWidth, tileHeight), tileColumn = tileWidth * (tileIndex % sheetColumn), tileRow = tileHeight * Math.floor(tileIndex / sheetColumn); unitImage.drawTransparentImage(sheetImage, 0 - tileColumn, 0 - tileRow); setCharecter(tableKey, currentChars.charAt(tileIndex), unitImage, stayingChars.includes(currentChars.charAt(tileIndex)), stackedChars.includes(currentChars.charAt(tileIndex)), substractedChars.includes(currentChars.charAt(tileIndex)), eraseColor, spaceColor, solidColor, subColor);
         }
     }
 
     /**
-     * add more long glyph array
-     * from charcter sheet
-     * to the table
+     * add more long glyph array from charcter sheet to the table
      */
     //%blockid=renfont_setchararrfromimgsheet
-    //%block="set |table id $tid and set img sheet $PngSheet=screen_image_picker with array of letters $GroupChar||and | array of staying letters $StayChar array of letters on the letters $CharOnChar and array of Char Substact $CharSubW width $twid height $thei erase col $bcl space col $scl base col $mcl guard col $ncl"
-    //%tid.shadow=renfont_tablenameshadow
-    //%bcl.shadow=colorindexpicker
-    //%scl.shadow=colorindexpicker
-    //%mcl.shadow=colorindexpicker
-    //%ncl.shadow=colorindexpicker
+    //%block="set |table id $tableKey and set img sheet $sheetImage=screen_image_picker with array of letters $currentChars||and | array of staying letters $stayingChars array of letters on the letters $stackedChars and array of Char Substact $substractedChars width $tileWidth height $tileHeight erase col $eraseColor space col $spaceColor base col $solidColor guard col $subColor"
+    //%tableKey.shadow=renfont_tablenameshadow
+    //%eraseColor.shadow=colorindexpicker
+    //%spaceColor.shadow=colorindexpicker
+    //%solidColor.shadow=colorindexpicker
+    //%subColor.shadow=colorindexpicker
     //%group="create"
     //%weight=6
-    export function setCharArrFromSheet(tid: string, PngSheet: Image = image.create(10, 16), GroupChar: string[] = [], StayChar: string[] = [], CharOnChar: string[] = [], CharSubW: string[] = [], twid: number = 5, thei: number = 8, bcl: number = 0, scl: number = 0, mcl: number = 0, ncl: number = 0) {
-        let gwid2 = Math.round(PngSheet.width / twid), uig2 = image.create(twid, thei), txi2 = 0, tyi2 = 0;
-        for (let tvn2 = 0; tvn2 < GroupChar.length; tvn2++) {
-            uig2 = image.create(twid, thei); txi2 = twid * (tvn2 % gwid2); tyi2 = thei * Math.floor(tvn2 / gwid2); uig2.drawTransparentImage(PngSheet, 0 - txi2, 0 - tyi2); setCharecter(tid, GroupChar[tvn2], uig2, StayChar.indexOf(GroupChar[tvn2]) >= 0, CharOnChar.indexOf(GroupChar[tvn2]) >= 0, CharSubW.indexOf(GroupChar[tvn2]) >= 0, bcl, scl, mcl, ncl);
+    export function setCharArrFromSheet(tableKey: string, sheetImage: Image = image.create(10, 16), currentChars: string[] = [], stayingChars: string[] = [], stackedChars: string[] = [], substractedChars: string[] = [], tileWidth: number = 5, tileHeight: number = 8, eraseColor: number = 0, spaceColor: number = 0, solidColor: number = 0, subColor: number = 0) {
+        const sheetColumn = Math.round(sheetImage.width / tileWidth)
+        for (let tileIndex = 0; tileIndex < currentChars.length; tileIndex++) {
+            const unitImage = image.create(tileWidth, tileHeight), tileColumn = tileWidth * (tileIndex % sheetColumn), tileRow = tileHeight * Math.floor(tileIndex / sheetColumn); unitImage.drawTransparentImage(sheetImage, 0 - tileColumn, 0 - tileRow); setCharecter(tableKey, currentChars[tileIndex], unitImage, stayingChars.indexOf(currentChars[tileIndex]) >= 0, stackedChars.indexOf(currentChars[tileIndex]) >= 0, substractedChars.indexOf(currentChars[tileIndex]) >= 0, eraseColor, spaceColor, solidColor, subColor);
         }
     }
 
     /**
-     * read the length of
-     * my charcter in table
+     * read the length of my charcter in table
      */
     //%blockid=renfont_numofglyphs
-    //%block="number of glyphs in table id $gid"
-    //%gid.shadow=renfont_tablenameshadow
+    //%block="number of glyphs in table id $tableKey"
+    //%tableKey.shadow=renfont_tablenameshadow
     //%group="datainfo"
     //%weight=2
-    export function numOfGlyphs(gid: string): number {
-        let tid2 = gettableid(gid)
-        return ligs[tid2].length
+    export function numOfGlyphs(tableKey: string): number {
+        const tableId = gettableid(tableKey)
+        return ligs[tableId].length
     }
 
     /**
-     * read the array charcter image
-     * of my table
+     * read the array charcter image of my table
      */
     //%blockid=renfont_arrofgypimg
-    //%block="array of glyph images in table id $gid"
-    //%gid.shadow=renfont_tablenameshadow
+    //%block="array of glyph images in table id $tableKey"
+    //%tableKey.shadow=renfont_tablenameshadow
     //%group="datainfo"
     //%weight=4
-    export function imageArray(gid: string): Image[] {
-        let tid3 = gettableid(gid)
-        return ligages[tid3]
+    export function imageArray(tableKey: string): Image[] {
+        const tableId = gettableid(tableKey)
+        return ligGlyphImages[tableId]
     }
 
     /**
-     * read the array charcter
-     * of my table
+     * read the array charcter of my table
      */
     //%blockid=renfont_arrofglyphs
-    //%block="array of glyphs in table id $gid"
-    //%gid.shadow=renfont_tablenameshadow
+    //%block="array of glyphs in table id $tableKey"
+    //%tableKey.shadow=renfont_tablenameshadow
     //%group="datainfo"
     //%weight=6
-    export function glyphArray(gid: string): String[] {
-        let tid4 = gettableid(gid)
-        return ligs[tid4]
+    export function glyphArray(tableKey: string): String[] {
+        const tableId = gettableid(tableKey)
+        return ligs[tableId]
     }
 
-    function setTextImgValue(arrm: boolean, input: string, iwidt: number, lid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = undefined, lineh: number = undefined) {
+    function setTextImgValue(arrm: boolean, input: string, pageWidth: number, tableKey: string, solidColor: number = 0, outlineColor: number = 0, alm: number = 0, letterspaceUnit: number = undefined, linespaceUnit: number = undefined) {
         alm = Math.constrain(alm, -1, 1) , input = input.replaceAll("\\n" , "\n")
-        let tid5 = gettableid(lid), overflow = false, overflows: boolean[] = []
+        let tableId = gettableid(tableKey), overflow = false, overflows: boolean[] = []
         if (rendering) {
             if (arrm) return [image.create(0, 0)] as Image[]
             else return image.create(0, 0) as Image
         }
         rendering = true
-        if (lineh == undefined) lineh = lineheight
-        if (spacew == undefined) spacew = letterspace
+        if (linespaceUnit == undefined) linespaceUnit = linespace
+        if (letterspaceUnit == undefined) letterspaceUnit = letterspace
         let curchar = "", curchar2 = "", uhei = 0, outputarr: Image[] = [], lnwit: number[] = [], heig = 0, widt = 0, curwidt = 0, uwidt = 0, swidt = 0, nwidt = 0, wie = 0, hie = 0, hvi = 0;
         for (let currentletter = 0; currentletter < input.length; currentletter++) {
-            curchar = deepChar(tid5, currentletter, input)
-            if (!(ligs[tid5].indexOf(curchar) < 0)) {
-                uwidt = ligwidth[tid5][(ligs[tid5].indexOf(curchar))]
-                if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] <= 0) {
-                    nwidt = ligages[tid5][(ligs[tid5].indexOf(curchar))].width
+            curchar = deepChar(tableId, currentletter, input)
+            if (!(ligs[tableId].indexOf(curchar) < 0)) {
+                uwidt = ligWidths[tableId][(ligs[tableId].indexOf(curchar))]
+                if (ligWidths[tableId][(ligs[tableId].indexOf(curchar))] <= 0) {
+                    nwidt = ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].width
                 } else {
                     nwidt = 0
                 }
@@ -359,34 +351,34 @@ namespace Renfont {
                 } else {
                     swidt = 0
                 }
-                curchar2 = deepChar(tid5, currentletter + 1, input)
-                if ((curchar2 != curchar) && Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar2)] - ligwidth[tid5][ligs[tid5].indexOf(curchar2)]) > 0) {
-                    wie += Math.abs(ligwidth[tid5][ligs[tid5].indexOf(curchar)] - Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar2)] - ligwidth[tid5][ligs[tid5].indexOf(curchar2)]))
-                } else if (Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar)] - ligwidth[tid5][ligs[tid5].indexOf(curchar)]) > 0) {
-                    wie += ligsubw[tid5][(ligs[tid5].indexOf(curchar))]
-                } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
+                curchar2 = deepChar(tableId, currentletter + 1, input)
+                if ((curchar2 != curchar) && Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar2)] - ligWidths[tableId][ligs[tableId].indexOf(curchar2)]) > 0) {
+                    wie += Math.abs(ligWidths[tableId][ligs[tableId].indexOf(curchar)] - Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar2)] - ligWidths[tableId][ligs[tableId].indexOf(curchar2)]))
+                } else if (Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar)] - ligWidths[tableId][ligs[tableId].indexOf(curchar)]) > 0) {
+                    wie += ligSubWidths[tableId][(ligs[tableId].indexOf(curchar))]
+                } else if (ligWidths[tableId][(ligs[tableId].indexOf(curchar))] > 0) {
                     wie += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findLetter(input, currentletter, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter + (curchar.length - 1) >= input.length - 1)) {
-                    wie += spacew
+                if ((pageWidth <= 0 || !(findLetter(input, currentletter, " ", "\n"))) && (ligWidths[tableId][(ligs[tableId].indexOf(input.charAt(Math.min(currentletter + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter + (curchar.length - 1) >= input.length - 1)) {
+                    wie += letterspaceUnit
                 }
-                hvi = ligages[tid5][(ligs[tid5].indexOf(curchar))].height
+                hvi = ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].height
             } else if (input.charAt(currentletter) == " ") {
-                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
-                else if (iwidt <= 0) wie += 3 * spacew
+                if (pageWidth > 0 && !(findLetter(input, currentletter, " ", "\n"))) wie += 3 * letterspaceUnit
+                else if (pageWidth <= 0) wie += 3 * letterspaceUnit
             } else {
-                if (iwidt > 0 && !(findLetter(input, currentletter, " ", "\n"))) wie += 3 * spacew
-                else if (iwidt <= 0) wie += 3 * spacew
+                if (pageWidth > 0 && !(findLetter(input, currentletter, " ", "\n"))) wie += 3 * letterspaceUnit
+                else if (pageWidth <= 0) wie += 3 * letterspaceUnit
             }
             uhei = Math.max(uhei, hvi), heig = Math.max(heig, hie + hvi)
-            if (iwidt > 0) {
-                if (wie >= iwidt || (findLetter(input, currentletter, " ", "\n"))) {
+            if (pageWidth > 0) {
+                if (wie >= pageWidth || (findLetter(input, currentletter, " ", "\n"))) {
                     if (uhei > hvi) {
                         hie += uhei
                     } else {
                         hie += hvi
                     }
-                    hie += lineh
+                    hie += linespaceUnit
                     wie = 0;
                     if(findLetter(input, currentletter, " ", "\n")) {
                         currentletter += findLetter_gapCount
@@ -400,42 +392,42 @@ namespace Renfont {
         wie = 0, widt = 0
         let hix = 0;
         for (let currentletter2 = 0; currentletter2 < input.length; currentletter2++) {
-            curchar = deepChar(tid5, currentletter2, input)
-            if (!(ligs[tid5].indexOf(curchar) < 0)) {
-                uwidt = ligwidth[tid5][(ligs[tid5].indexOf(curchar))]
-                if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] <= 0) {
-                    nwidt = ligages[tid5][(ligs[tid5].indexOf(curchar))].width
+            curchar = deepChar(tableId, currentletter2, input)
+            if (!(ligs[tableId].indexOf(curchar) < 0)) {
+                uwidt = ligWidths[tableId][(ligs[tableId].indexOf(curchar))]
+                if (ligWidths[tableId][(ligs[tableId].indexOf(curchar))] <= 0) {
+                    nwidt = ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].width
                 } else {
                     nwidt = 0
                 }
-                if (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter2 + curchar.length, input.length - 1))))] <= 0) {
+                if (ligWidths[tableId][(ligs[tableId].indexOf(input.charAt(Math.min(currentletter2 + curchar.length, input.length - 1))))] <= 0) {
                     swidt = uwidt
                 } else {
                     swidt = 0
                 }
-                curchar2 = deepChar(tid5, currentletter2 + 1, input)
-                if ((curchar2 != curchar) && Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar2)] - ligwidth[tid5][ligs[tid5].indexOf(curchar2)]) > 0) {
-                    wie += Math.abs(ligwidth[tid5][ligs[tid5].indexOf(curchar)] - Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar2)] - ligwidth[tid5][ligs[tid5].indexOf(curchar2)]))
-                } else if (Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar)] - ligwidth[tid5][ligs[tid5].indexOf(curchar)]) > 0) {
-                    wie += ligsubw[tid5][(ligs[tid5].indexOf(curchar))]
-                } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
+                curchar2 = deepChar(tableId, currentletter2 + 1, input)
+                if ((curchar2 != curchar) && Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar2)] - ligWidths[tableId][ligs[tableId].indexOf(curchar2)]) > 0) {
+                    wie += Math.abs(ligWidths[tableId][ligs[tableId].indexOf(curchar)] - Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar2)] - ligWidths[tableId][ligs[tableId].indexOf(curchar2)]))
+                } else if (Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar)] - ligWidths[tableId][ligs[tableId].indexOf(curchar)]) > 0) {
+                    wie += ligSubWidths[tableId][(ligs[tableId].indexOf(curchar))]
+                } else if (ligWidths[tableId][(ligs[tableId].indexOf(curchar))] > 0) {
                     wie += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findLetter(input, currentletter2, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter2 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter2 + (curchar.length - 1) >= input.length - 1)) {
-                    wie += spacew
+                if ((pageWidth <= 0 || !(findLetter(input, currentletter2, " ", "\n"))) && (ligWidths[tableId][(ligs[tableId].indexOf(input.charAt(Math.min(currentletter2 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter2 + (curchar.length - 1) >= input.length - 1)) {
+                    wie += letterspaceUnit
                 }
             } else if (input.charAt(currentletter2) == " ") {
-                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
-                else if (iwidt <= 0) wie += 3 * spacew
+                if (pageWidth > 0 && !(findLetter(input, currentletter2, " ", "\n"))) wie += 3 * letterspaceUnit
+                else if (pageWidth <= 0) wie += 3 * letterspaceUnit
             } else {
-                if (iwidt > 0 && !(findLetter(input, currentletter2, " ", "\n"))) wie += 3 * spacew
-                else if (iwidt <= 0) wie += 3 * spacew
+                if (pageWidth > 0 && !(findLetter(input, currentletter2, " ", "\n"))) wie += 3 * letterspaceUnit
+                else if (pageWidth <= 0) wie += 3 * letterspaceUnit
             }
-            if (iwidt > 0) {
-                if (wie >= iwidt || (findLetter(input, currentletter2, " ", "\n"))) {
+            if (pageWidth > 0) {
+                if (wie >= pageWidth || (findLetter(input, currentletter2, " ", "\n"))) {
                     widt = Math.max(widt, wie)
                     if (!findLetter(input, currentletter2, " ", "\n") && !overflow) {
-                        wie -= spacew * 3
+                        wie -= letterspaceUnit * 3
                         overflows.push(true)
                         overflow = true
                     } else if (findLetter(input, currentletter2, " ", "\n") && overflow) {
@@ -461,26 +453,26 @@ namespace Renfont {
         wie -= letterspace; lnwit.push(wie);
         let hgi = 0, limg = image.create(lnwit[hgi], heig), scwidt2 = true, underc = false, scnwidt2 = false, rimg = image.create(8, 8), output = image.create(widt, heig), sc = 0; hie = 0; wie = 0; curwidt = 0;
         let uoutput: Image = image.create(output.width, output.height), uuoutput: Image = image.create(output.width, output.height);
-        if (bcol > 0) { uoutput = image.create(output.width + 2, output.height + 2) }
+        if (outlineColor > 0) { uoutput = image.create(output.width + 2, output.height + 2) }
         for (let currentletter3 = 0; currentletter3 < input.length; currentletter3++) {
-            wie = 0; curchar = deepChar(tid5, currentletter3, input)
-            if (!(ligs[tid5].indexOf(curchar) < 0)) {
-                hvi = ligages[tid5][(ligs[tid5].indexOf(curchar))].height; uwidt = ligwidth[tid5][(ligs[tid5].indexOf(curchar))];
-                if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] <= 0) {
-                    nwidt = ligages[tid5][(ligs[tid5].indexOf(curchar))].width
+            wie = 0; curchar = deepChar(tableId, currentletter3, input)
+            if (!(ligs[tableId].indexOf(curchar) < 0)) {
+                hvi = ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].height; uwidt = ligWidths[tableId][(ligs[tableId].indexOf(curchar))];
+                if (ligWidths[tableId][(ligs[tableId].indexOf(curchar))] <= 0) {
+                    nwidt = ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].width
                 } else {
                     nwidt = 0
                 }
-                scwidt2 = false; scnwidt2 = false; wie = 0; rimg = ligages[tid5][(ligs[tid5].indexOf(curchar))].clone()
-                let ccol = ligul[tid5][ligs[tid5].indexOf(input.charAt(currentletter3))];
-                if (ligwidth[tid5][ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] > 0 && ligdir[tid5][ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] == 0) {
-                    rimg.replace(ccol, ligcol[tid5][ligs[tid5].indexOf(curchar)])
-                } else if (ligwidth[tid5][ligs[tid5].indexOf(curchar)] > 0 && ligdir[tid5][ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] < 0) {
+                scwidt2 = false; scnwidt2 = false; wie = 0; rimg = ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].clone()
+                let ccol = ligSubColors[tableId][ligs[tableId].indexOf(input.charAt(currentletter3))];
+                if (ligWidths[tableId][ligs[tableId].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] > 0 && ligDirYs[tableId][ligs[tableId].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] == 0) {
+                    rimg.replace(ccol, ligsolidColors[tableId][ligs[tableId].indexOf(curchar)])
+                } else if (ligWidths[tableId][ligs[tableId].indexOf(curchar)] > 0 && ligDirYs[tableId][ligs[tableId].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] < 0) {
                     rimg.replace(ccol, 0)
-                } else if (ligwidth[tid5][ligs[tid5].indexOf(curchar)] > 0 && ligdir[tid5][ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] > 0) {
-                    rimg.replace(ccol, ligcol[tid5][ligs[tid5].indexOf(curchar)])
+                } else if (ligWidths[tableId][ligs[tableId].indexOf(curchar)] > 0 && ligDirYs[tableId][ligs[tableId].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1)))] > 0) {
+                    rimg.replace(ccol, ligsolidColors[tableId][ligs[tableId].indexOf(curchar)])
                 }
-                if (Math.abs(ligdir[tid5][ligs[tid5].indexOf(curchar)]) > 0 && Math.abs(ligdir[tid5][ligs[tid5].indexOf(input.charAt(Math.max(currentletter3 - 1, 0)))]) == 0) {
+                if (Math.abs(ligDirYs[tableId][ligs[tableId].indexOf(curchar)]) > 0 && Math.abs(ligDirYs[tableId][ligs[tableId].indexOf(input.charAt(Math.max(currentletter3 - 1, 0)))]) == 0) {
                     sc = 1; wie = 0;
                     while (sc > 0) {
                         sc = 0
@@ -495,29 +487,29 @@ namespace Renfont {
                     }
                 }
                 wie = Math.abs(wie)
-                limg.drawTransparentImage(rimg, curwidt - ((nwidt + wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligages[tid5][(ligs[tid5].indexOf(curchar))].height))
-                if (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1))))] == 0) {
+                limg.drawTransparentImage(rimg, curwidt - ((nwidt + wie) - ((input.charAt(currentletter3) != curchar)?Math.round(rimg.width/curchar.length/2):0)), 0 + (hvi - ligGlyphImages[tableId][(ligs[tableId].indexOf(curchar))].height))
+                if (ligWidths[tableId][(ligs[tableId].indexOf(input.charAt(Math.min(currentletter3 + curchar.length, input.length - 1))))] == 0) {
                     swidt = uwidt
                 } else {
                     swidt = 0
                 }
-                curchar2 = deepChar(tid5, currentletter3 + 1, input)
-                if ((curchar2 != curchar) && Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar2)] - ligwidth[tid5][ligs[tid5].indexOf(curchar2)]) > 0) {
-                    curwidt += Math.abs(ligwidth[tid5][ligs[tid5].indexOf(curchar)] - Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar2)] - ligwidth[tid5][ligs[tid5].indexOf(curchar2)]))
-                } else if (Math.abs(ligsubw[tid5][ligs[tid5].indexOf(curchar)] - ligwidth[tid5][ligs[tid5].indexOf(curchar)]) > 0) {
-                    curwidt += ligsubw[tid5][(ligs[tid5].indexOf(curchar))]
-                } else if (ligwidth[tid5][(ligs[tid5].indexOf(curchar))] > 0) {
+                curchar2 = deepChar(tableId, currentletter3 + 1, input)
+                if ((curchar2 != curchar) && Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar2)] - ligWidths[tableId][ligs[tableId].indexOf(curchar2)]) > 0) {
+                    curwidt += Math.abs(ligWidths[tableId][ligs[tableId].indexOf(curchar)] - Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar2)] - ligWidths[tableId][ligs[tableId].indexOf(curchar2)]))
+                } else if (Math.abs(ligSubWidths[tableId][ligs[tableId].indexOf(curchar)] - ligWidths[tableId][ligs[tableId].indexOf(curchar)]) > 0) {
+                    curwidt += ligSubWidths[tableId][(ligs[tableId].indexOf(curchar))]
+                } else if (ligWidths[tableId][(ligs[tableId].indexOf(curchar))] > 0) {
                     curwidt += Math.abs(uwidt - nwidt)
                 }
-                if ((iwidt <= 0 || !(findLetter(input, currentletter3, " ", "\n"))) && (ligwidth[tid5][(ligs[tid5].indexOf(input.charAt(Math.min(currentletter3 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter3 + (curchar.length - 1) >= input.length - 1)) {
-                    curwidt += spacew
+                if ((pageWidth <= 0 || !(findLetter(input, currentletter3, " ", "\n"))) && (ligWidths[tableId][(ligs[tableId].indexOf(input.charAt(Math.min(currentletter3 + Math.max(curchar.length, 1), input.length - 1))))] > 0 || currentletter3 + (curchar.length - 1) >= input.length - 1)) {
+                    curwidt += letterspaceUnit
                 }
             } else if (input.charAt(currentletter3) == " ") {
-                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
-                else if (iwidt <= 0) curwidt += 3 * spacew
+                if (pageWidth > 0 && !(findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * letterspaceUnit
+                else if (pageWidth <= 0) curwidt += 3 * letterspaceUnit
             } else {
-                if (iwidt > 0 && !(findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * spacew
-                else if (iwidt <= 0) curwidt += 3 * spacew
+                if (pageWidth > 0 && !(findLetter(input, currentletter3, " ", "\n"))) curwidt += 3 * letterspaceUnit
+                else if (pageWidth <= 0) curwidt += 3 * letterspaceUnit
             }
             uhei = Math.max(uhei, hvi)
             uuoutput = output.clone()
@@ -528,15 +520,15 @@ namespace Renfont {
             } else if (alm == 0) {
                 uuoutput.drawTransparentImage(limg.clone(), Math.abs((output.width / 2) - (Math.min(curwidt, limg.width) / 2)), hie)
             }
-            if (icol > 0) {
+            if (solidColor > 0) {
                 for (let ico = 1; ico < 16; ico++) {
-                    uuoutput.replace(ico, icol)
+                    uuoutput.replace(ico, solidColor)
                 }
             }
-            if (bcol > 0) { uuoutput = drawOutline(uuoutput.clone(), bcol, true) } else { uoutput = uuoutput.clone() }
+            if (outlineColor > 0) { uuoutput = drawOutline(uuoutput.clone(), outlineColor, true) } else { uoutput = uuoutput.clone() }
             outputarr.push(uuoutput.clone())
-            if (iwidt > 0) {
-                if (curwidt >= iwidt || (findLetter(input, currentletter3, " ", "\n"))) {
+            if (pageWidth > 0) {
+                if (curwidt >= pageWidth || (findLetter(input, currentletter3, " ", "\n"))) {
                     if (alm < 0) {
                         output.drawTransparentImage(limg.clone(), 0, hie)
                     } else if (alm > 0) {
@@ -544,21 +536,21 @@ namespace Renfont {
                     } else if (alm == 0) {
                         output.drawTransparentImage(limg.clone(), Math.abs((output.width / 2) - (limg.width / 2)), hie)
                     }
-                    if (icol > 0) {
+                    if (solidColor > 0) {
                         for (let ico2 = 1; ico2 < 16; ico2++) {
-                            output.replace(ico2, icol)
+                            output.replace(ico2, solidColor)
                         }
                     }
-                    if (bcol > 0) { uoutput = drawOutline(output.clone(), bcol, true) } else { uoutput = output.clone() }
+                    if (outlineColor > 0) { uoutput = drawOutline(output.clone(), outlineColor, true) } else { uoutput = output.clone() }
                     outputarr.push(uoutput.clone())
                     hgi += 1; limg = image.create(lnwit[hgi], heig); curwidt = 0;
-                    if (overflows[hgi]) curwidt -= 3 * spacew
+                    if (overflows[hgi]) curwidt -= 3 * letterspaceUnit
                     if (uhei > hvi) {
                         hie += uhei
                     } else {
                         hie += hvi
                     }
-                    hie += lineh
+                    hie += linespaceUnit
                     if(findLetter(input, currentletter3, " ", "\n")) {
                         currentletter3 += findLetter_gapCount
                     }
@@ -575,12 +567,12 @@ namespace Renfont {
         } else if (alm == 0) {
             output.drawTransparentImage(limg.clone(), Math.abs((output.width / 2) - (limg.width / 2)), hie)
         }
-        if (icol > 0) {
+        if (solidColor > 0) {
             for (let ico3 = 1; ico3 < 16; ico3++) {
-                output.replace(ico3, icol)
+                output.replace(ico3, solidColor)
             }
         }
-        if (bcol > 0) { uoutput = drawOutline(output, bcol, true) } else { uoutput = output.clone() }
+        if (outlineColor > 0) { uoutput = drawOutline(output, outlineColor, true) } else { uoutput = output.clone() }
         outputarr.push(uoutput.clone())
         rendering = false
         if (arrm) { return outputarr as Image[] }
@@ -589,85 +581,76 @@ namespace Renfont {
     }
 
     /**
-     * render text from my table
-     * to the image
+     * render text from my table to the image
      */
     //%blockid=renfont_setimgfromtext
-    //%block="create the image of |text $input in page width $iwidt from table id $tid||and |fill col $icol with outline $bcol and got alignment $alm and get debugalm $debugalm"
-    //%tid.shadow=renfont_tablenameshadow
+    //%block="create text image of |text $input in page width $pageWidth from table id $tableKey||and |fill col $solidColor with outline $outlineColor and got alignment $alm and get debugalm $debugalm"
+    //%tableKey.shadow=renfont_tablenameshadow
     //%alm.min=-1 alm.max=1 alm.defl=0
-    //%icol.shadow=colorindexpicker
-    //%bcol.shadow=colorindexpicker
+    //%solidColor.shadow=colorindexpicker
+    //%outlineColor.shadow=colorindexpicker
     //%group="render"
     //%weight=4
-    export function setTextImage(input: string = "", iwidt: number = 0, tid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
-        return setTextImgValue(false, input, iwidt, tid, icol, bcol, alm, spacew, lineh) as Image
+    export function setTextImage(input: string = "", pageWidth: number = 0, tableKey: string, solidColor: number = 0, outlineColor: number = 0, alm: number = 0, letterspaceUnit: number = 0, linespaceUnit: number = 0) {
+        return setTextImgValue(false, input, pageWidth, tableKey, solidColor, outlineColor, alm, letterspaceUnit, linespaceUnit) as Image
     }
 
     /**
-     * render text from my table
-     * like basic text animation
-     * to image array
+     * render text from my table like basic text animation to image array
      */
     //%blockid=renfont_setimgframefromtext
-    //%block="create the image frame of |text $input in page width $iwidt from table id $tid||and |fill col $icol with outline $bcol and got alignment $alm and get debugalm $debugalm"
-    //%tid.shadow=renfont_tablenameshadow
+    //%block="create text image array of |text $input in page width $pageWidth from table id $tableKey||and |fill col $solidColor with outline $outlineColor and got alignment $alm and get debugalm $debugalm"
+    //%tableKey.shadow=renfont_tablenameshadow
     //%alm.min=-1 alm.max=1 alm.defl=0
-    //%icol.shadow=colorindexpicker
-    //%bcol.shadow=colorindexpicker
+    //%solidColor.shadow=colorindexpicker
+    //%outlineColor.shadow=colorindexpicker
     //%group="render"
     //%weight=2
-    export function setTextImageArray(input: string = "", iwidt: number = 0, tid: string, icol: number = 0, bcol: number = 0, alm: number = 0, spacew: number = 0, lineh: number = 0) {
-        return setTextImgValue(true, input, iwidt, tid, icol, bcol, alm, spacew, lineh) as Image[]
+    export function setTextImageArray(input: string = "", pageWidth: number = 0, tableKey: string, solidColor: number = 0, outlineColor: number = 0, alm: number = 0, letterspaceUnit: number = 0, linespaceUnit: number = 0) {
+        return setTextImgValue(true, input, pageWidth, tableKey, solidColor, outlineColor, alm, letterspaceUnit, linespaceUnit) as Image[]
     }
 
     /** 
-     * render text
-     * and stamp to 
-     * my dialog frame
+     * render text and stamp to my dialog frame
      */
     //%blockid=renfont_stamptexttoframe
-    //%block="StampStrImgToTheDialogFrame $Fimg=dialog_image_picker Text $Txt Text width $Wval TableId $arrid||And text color col $ucol and outline $bcol Alignment $ualm"
+    //%block="create dialog text $dialogImage=dialog_image_picker text $txt text width $pageWidth TableId $arrid||And text color col $solidColor and outline $outlineColor Alignment $ualm"
     //%arrid.shadow=renfont_tablenameshadow
     //%ualm.min=-1 ualm.max=1 ualm.defl=0
-    //%ucol.shadow=colorindexpicker
-    //%bcol.shadow=colorindexpicker
+    //%solidColor.shadow=colorindexpicker
+    //%outlineColor.shadow=colorindexpicker
     //%group="Dialog render"
     //%weight=4
-    export function stampStrToDialog(Fimg: Image, Txt: string = "", Wval: number = 0, arrid: string, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
-        let StrImg: Image = setTextImage(Txt, Wval, arrid, ucol, bcol, ualm, spacew, lineh)
-        let gapw = Math.floor(Fimg.width / 3)
-        let gaph = Math.floor(Fimg.height / 3)
-        let UfImg: Image = setImgFrame(Fimg, StrImg.width + ((gapw * 2) + Math.floor(gapw / 2)), StrImg.height + ((gaph * 2) + Math.floor(gaph / 2)))
-        UfImg.drawTransparentImage(StrImg.clone(), gapw, gaph)
-        return UfImg
+    export function stampStrToDialog(dialogImage: Image, txt: string = "", pageWidth: number = 0, arrid: string, solidColor: number = 0, outlineColor: number = 0, ualm: number = 0, letterspaceUnit: number = 0, linespaceUnit: number = 0) {
+        let textImage: Image = setTextImage(txt, pageWidth, arrid, solidColor, outlineColor, ualm, letterspaceUnit, linespaceUnit)
+        let tileDialogWidth = Math.floor(dialogImage.width / 3)
+        let tileDialogHeight = Math.floor(dialogImage.height / 3)
+        let dialogImageBox: Image = setImgFrame(dialogImage, textImage.width + ((tileDialogWidth * 2) + Math.floor(tileDialogWidth / 2)), textImage.height + ((tileDialogHeight * 2) + Math.floor(tileDialogHeight / 2)))
+        dialogImageBox.drawTransparentImage(textImage.clone(), tileDialogWidth, tileDialogHeight)
+        return dialogImageBox
     }
 
     /**
-     * render text
-     * like basic text animation
-     * and stamp to 
-     * my dialog frame
-     * as image array
+     * render text like basic text animation and stamp to my dialog frame as image array
      */
     //%blockid=renfont_stamptextarrtoframe
-    //%block="StampStrAnimToDialogFrame $Fimg=dialog_image_picker Text input $Txt In text width $Wval At table id $arrid||and text color $ucol with outline $bcol And alignment $ualm "
+    //%block="create dialog text array $dialogImage=dialog_image_picker text input $txt In page width $pageWidth At table id $arrid||and text color $solidColor with outline $outlineColor And alignment $ualm "
     //%arrid.shadow=renfont_tablenameshadow
     //%ualm.min=-1 ualm.max=1 ualm.defl=0
-    //%ucol.shadow=colorindexpicker
-    //%bcol.shadow=colorindexpicker
+    //%solidColor.shadow=colorindexpicker
+    //%outlineColor.shadow=colorindexpicker
     //%group="Dialog render"
     //%weight=2
-    export function stampStrArrToDialog(Fimg: Image, Txt: string = "", Wval: number = 0, arrid: string, ucol: number = 0, bcol: number = 0, ualm: number = 0, spacew: number = 0, lineh: number = 0) {
-        let StrImg2: Image[] = setTextImageArray(Txt, Wval, arrid, ucol, bcol, ualm, spacew, lineh)
-        let gapw2 = Math.floor(Fimg.width / 3)
-        let gaph2 = Math.floor(Fimg.height / 3)
-        let UfImg2: Image = setImgFrame(Fimg, StrImg2[0].width + ((gapw2 * 2) + Math.floor(gapw2 / 2)), StrImg2[0].height + ((gaph2 * 2) + Math.floor(gaph2 / 2)))
+    export function stampStrArrToDialog(dialogImage: Image, txt: string = "", pageWidth: number = 0, arrid: string, solidColor: number = 0, outlineColor: number = 0, ualm: number = 0, letterspaceUnit: number = 0, linespaceUnit: number = 0) {
+        let textImageArray: Image[] = setTextImageArray(txt, pageWidth, arrid, solidColor, outlineColor, ualm, letterspaceUnit, linespaceUnit)
+        let tileDialogWidth = Math.floor(dialogImage.width / 3)
+        let tileDialogHeight = Math.floor(dialogImage.height / 3)
+        let dialogImageBox: Image = setImgFrame(dialogImage, textImageArray[0].width + ((tileDialogWidth * 2) + Math.floor(tileDialogWidth / 2)), textImageArray[0].height + ((tileDialogHeight * 2) + Math.floor(tileDialogHeight / 2)))
         let imgArr: Image[] = []
         let uimg: Image = null
-        for (let mgi = 0; mgi < StrImg2.length; mgi++) {
-            uimg = UfImg2.clone()
-            uimg.drawTransparentImage(StrImg2[mgi].clone(), gapw2, gaph2)
+        for (let mgi = 0; mgi < textImageArray.length; mgi++) {
+            uimg = dialogImageBox.clone()
+            uimg.drawTransparentImage(textImageArray[mgi].clone(), tileDialogWidth, tileDialogHeight)
             imgArr.push(uimg)
         }
         return imgArr
@@ -703,7 +686,7 @@ namespace Renfont {
     //%group="main propety"
     //%weight=4
     export function SetLine(input: number) {
-        lineheight = input
+        linespace = input
     }
 
     /**
@@ -714,7 +697,7 @@ namespace Renfont {
     //%group="main propety"
     //%weight=2
     export function ChangeLine(input: number) {
-        lineheight += input
+        linespace += input
     }
 
     export enum align { left = -1, center = 0, right = 1 }
@@ -729,50 +712,56 @@ namespace Renfont {
         return alg
     }
 
-    export enum tempfont { MainFont = 1, ArcadeFont = 2, LatinMini = 3 }
+    export enum tempfont {
+        //%block="main font"
+        MainFont = 1,
+        //%block="arcade font"
+        ArcadeFont = 2,
+        //%block="latin mini"
+        LatinMini = 3
+    }
 
     /**
-     * set charcter
-     * from template
+     * set charcter from template
      */
     //%blockid=renfont_presetfont
-    //%block="SetupPresetFont $tempf with table id $tid"
-    //%tid.shadow=renfont_tablenameshadow
+    //%block="SetupPresetFont $tempf with table id $tableKey"
+    //%tableKey.shadow=renfont_tablenameshadow
     //%group="create"
     //%weight=10
-    export function setupPresetFont(tempf: tempfont, tid: string) {
+    export function setupPresetFont(tempf: tempfont, tableKey: string) {
         switch (tempf) {
             case 1:
-                _mainfont(tid)
+                _mainfont(tableKey)
                 break;
             case 2:
-                _arcadefont(tid)
+                _arcadefont(tableKey)
                 break;
             case 3:
-                _latinmini(tid)
+                _latinmini(tableKey)
                 break;
             default:
-                _mainfont(tid)
+                _mainfont(tableKey)
                 break;
         }
     }
 
     export enum thisDataNumType {
         //%block="solid color"
-        Tcol = 1,
+        solidColor = 1,
         //%block="outline color"
-        Bcol = 2,
+        outlineColor = 2,
         //%block="page width"
-        PageW = 3,
+        pageWidth = 3,
         //%block="alignment"
-        Talg = 4
+        align = 4
     }
 
     export enum spacetype {
         //%block="letter space"
         letterspace = 1,
         //%block="line height"
-        lineheight = 2
+        linespace = 2
     }
 
     export enum colortype {
@@ -793,108 +782,134 @@ namespace Renfont {
      * create the renfont as Sprite
      */
     //%blockid=renfont_Sprite_create
-    //%block="create renfont Sprite as $Text in color $Col with outline $Bcol in alignment $alg and tableid $Tid||and page width $PageW"
-    //%Tid.shadow=renfont_tablenameshadow Tid.defl="fonttemp"
-    //%Col.shadow=colorindexpicker
-    //%Bcol.shadow=colorindexpicker
+    //%block="create renfont Sprite as $text in color $solidColor with outline $outlineColor in alignment $alg and tableid $tableKey||and page width $pageWidth"
+    //%tableKey.shadow=renfont_tablenameshadow tableKey.defl="fonttemp"
+    //%solidColor.shadow=colorindexpicker
+    //%outlineColor.shadow=colorindexpicker
     //%blockSetVariable="myRenfont"
     //%group="Sprite mode"
     //%weight=22
-    export function createSprite(Text: string = "", Col: number, Bcol: number, alg: align, Tid: string, PageW: number = 0) {
-        let renfontSprite = new RenfontSprite(Text, Col, Bcol, alg, Tid, PageW)
+    export function createSprite(text: string = "", solidColor: number, outlineColor: number, alg: align, tableKey: string, pageWidth: number = 0) {
+        let renfontSprite = new RenfontSprite(text, solidColor, outlineColor, alg, tableKey, pageWidth)
         renfontSprite.setKind(SpriteKind.Renfont)
         renfontSprite.setPosition(Math.floor(scene.screenWidth() / 2), Math.floor(scene.screenHeight() / 2))
         return renfontSprite
     }
 
     export class RenfontSprite extends Sprite {
-        stxt: string
-        scol: number
-        stid: string
+        txt: string
+        solidColor: number
+        tableKey: string
         salg: number
-        pagew: number
-        spacew: number
-        lineh: number
-        bcol: number
-        scval: number
+        pageWidth: number
+        letterspace: number
+        linespace: number
+        outlineColor: number
+        msec: number
         anim: boolean
-        sdim: Image
-        nimg: Image
-        imgarr: Image[]
+        dialogImage: Image
+        saveImage: Image
+        saveImageArray: Image[]
 
-        protected updateTextImage() {
-            if (!this) return;
-            if (this.sdim) {
-                this.nimg = stampStrToDialog(
-                    this.sdim, 
-                    this.stxt, 
-                    this.pagew, 
-                    this.stid, 
-                    this.scol, 
-                    this.bcol, 
-                    this.salg, 
-                    this.spacew, 
-                    this.lineh
-                )
-            } else {
-                this.nimg = setTextImage(
-                    this.stxt, 
-                    this.pagew, 
-                    this.stid, 
-                    this.scol, 
-                    this.bcol, 
-                    this.salg, 
-                    this.spacew, 
-                    this.lineh
-                )
+        protected flagTick() {
+            if (this.flags & sprites.Flag.RelativeToCamera) {
+                this.x -= scene.cameraProperty(CameraProperty.Left), this.y -= scene.cameraProperty(CameraProperty.Top)
+                if (this.bottom < 0) this.top = scene.screenHeight(); if (this.top > scene.screenHeight()) this.bottom = 0
+                if (this.right < 0) this.left = scene.screenWidth(); if (this.left > scene.screenWidth()) this.right = 0
+            } if (!(this.flags & sprites.Flag.GhostThroughWalls || this.flags & sprites.Flag.Ghost)) {
+                if (this.isHittingTile(CollisionDirection.Right)) if (this.vx > 0) this.vx = 0;
+                if (this.isHittingTile(CollisionDirection.Left)) if (this.vx < 0) this.vx = 0
+                if (this.isHittingTile(CollisionDirection.Bottom)) if (this.vy > 0) this.vy = 0;
+                if (this.isHittingTile(CollisionDirection.Top)) if (this.vy < 0) this.vy = 0;
+            } if (this.flags & sprites.Flag.StayInScreen) {
+                if (this.bottom > scene.screenHeight() + 1 || this.top < 0) { if (this.vy < 0) this.top = 0; else if (this.vy > 0) this.bottom = scene.screenHeight(); this.vy = 0 }
+                if (this.right > scene.screenWidth() + 1 || this.left < 0) { if (this.vx < 0) this.left = 0; else if (this.vx > 0) this.right = scene.screenWidth(); this.vx = 0 }
+            } if (this.flags & sprites.Flag.BounceOnWall) {
+                if (this.vy !== 0) if (this.bottom > scene.screenHeight()+1) this.vy = -this.vy;else if (this.top < 0) this.vy = -this.vy
+                if (this.vx !== 0) if (this.right > scene.screenWidth()+1) this.vx = -this.vx;else if (this.left < 0) this.vx = -this.vx
             }
-            if (this.image.equals(this.nimg)) return;
-            this.setImage(this.nimg)
         }
 
-        constructor(txt: string, scol: number, bcol: number, alg: align, tid: string, pagew: number) {
+        protected runMain() {
+            basic.forever( function() {
+                const currentDelta = game.currentScene().eventContext.deltaTime;
+                control.runInBackground( function() { this.x += this.vx * currentDelta, this.y += this.vy * currentDelta; if (this.vx !== 0 || this.vy !== 0) this.flagTick(); })
+                pause(currentDelta);
+            })
+        }
+
+        constructor(txt: string, solidColor: number, outlineColor: number, alg: align, tableKey: string, pageWidth: number) {
             super(setTextImage(
                 txt,
-                pagew,
-                tid,
-                scol,
-                bcol,
+                pageWidth,
+                tableKey,
+                solidColor,
+                outlineColor,
                 alg
             ))
-            this.stxt = txt, this.scol = scol, this.bcol = bcol, this.stid = tid, this.salg = alg, this.pagew = pagew
-            this.updateTextImage()
+            this.txt = txt, this.solidColor = solidColor, this.outlineColor = outlineColor, this.tableKey = tableKey, this.salg = alg, this.pageWidth = pageWidth
+            this.updateImageSprite()
+            this.runMain()
+        }
+
+        protected updateImageSprite() {
+            if (!this) return;
+            if (this.dialogImage) {
+                this.saveImage = stampStrToDialog(
+                    this.dialogImage,
+                    this.txt,
+                    this.pageWidth,
+                    this.tableKey,
+                    this.solidColor,
+                    this.outlineColor,
+                    this.salg,
+                    this.letterspace,
+                    this.linespace
+                )
+            } else {
+                this.saveImage = setTextImage(
+                    this.txt,
+                    this.pageWidth,
+                    this.tableKey,
+                    this.solidColor,
+                    this.outlineColor,
+                    this.salg,
+                    this.letterspace,
+                    this.linespace
+                )
+            }
+            if (this.image.equals(this.saveImage)) return;
+            this.setImage(this.saveImage)
         }
     
         /**
-         * get text data
-         * from renfont Sprite
+         * get text data from renfont Sprite
          */
         //%blockid=renfont_Sprite_readtxt
         //%block="get $this as text data"
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=18
-        public getText() {
-            return this.stxt
+        public gettext() {
+            return this.txt
         }
     
         /**
-         * get option data number
-         * from renfont Sprite
+         * get option data number from renfont Sprite
          */
         //%blockid=renfont_Sprite_readthisdatainnum
         //%block="get $this from $NumType"
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=16
-        public getTextData(NumType: thisDataNumType) {
+        public gettextData(NumType: thisDataNumType) {
             switch (NumType) {
                 case 1:
-                    return this.scol;
+                    return this.solidColor;
                 case 2:
-                    return this.bcol;
+                    return this.outlineColor;
                 case 3:
-                    return this.pagew;
+                    return this.pageWidth;
                 case 4:
                     return this.salg;
                 default:
@@ -903,8 +918,7 @@ namespace Renfont {
         }
     
         /**
-         * set alignment as enum
-         * to renfont Sprite
+         * set alignment as enum to renfont Sprite
          */
         //%blockid=renfont_Sprite_setalign
         //%block=" $this=variables_get set align to $alg"
@@ -914,12 +928,11 @@ namespace Renfont {
         public setAlign(alg: align) {
             if (this.salg == getAlign(alg)) return;
             this.salg = getAlign(alg)
-            this.updateTextImage()
+            this.updateImageSprite()
         }
     
         /**
-         * set alignment as number
-         * to renfont Sprite
+         * set alignment as number to renfont Sprite
          */
         //%blockid=renfont_Sprite_setalignnum
         //%block=" $this set align value to $aln"
@@ -930,27 +943,25 @@ namespace Renfont {
             aln = Math.constrain(aln, -1, 1)
             if (this.salg == aln) return;
             this.salg = aln
-            this.updateTextImage()
+            this.updateImageSprite()
         }
     
         /**
-         * add or set dialog frame
-         * to renfont Sprite
+         * add or set dialog frame to renfont Sprite
          */
         //%blockid=renfont_Sprite_setdialog
-        //%block=" $this set dialog frame to $DlImg=dialog_image_picker"
+        //%block=" $this set dialog frame to $dialogImage=dialog_image_picker"
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=10
-        public setDialogTxt(DlImg: Image) {
-            if (this.sdim && this.sdim.equals(DlImg)) return;
-            this.sdim = DlImg
-            this.updateTextImage()
+        public setDialogtxt(dialogImage: Image) {
+            if (this.dialogImage && this.dialogImage.equals(dialogImage)) return;
+            this.dialogImage = dialogImage
+            this.updateImageSprite()
         }
     
         /**
-         * remove dialog frame
-         * at renfont Sprite
+         * remove dialog frame at renfont Sprite
          */
         //%blockid=renfont_Sprite_cleardialog
         //%block=" $this clear dialog frame"
@@ -958,15 +969,14 @@ namespace Renfont {
         //%group="Sprite mode"
         //%weight=9
         public clearSpriteDialog() {
-            if (!this.sdim) return;
-            this.sdim = undefined
-            this.updateTextImage()
+            if (!this.dialogImage) return;
+            this.dialogImage = undefined
+            this.updateImageSprite()
         }
     
     
         /**
-         * set gap space 
-         * to renfont Sprite
+         * set gap space to renfont Sprite
          */
         //%blockid=renfont_Sprite_setlinespace
         //%block=" $this set $gaptype to $value"
@@ -976,22 +986,21 @@ namespace Renfont {
         public setGap(gaptype: spacetype, value: number = 0) {
             switch (gaptype) {
                 case 1:
-                    if (this.spacew == value) return;
-                    this.spacew = value
+                    if (this.letterspace == value) return;
+                    this.letterspace = value
                     break;
                 case 2:
-                    if (this.lineh == value) return;
-                    this.lineh = value
+                    if (this.linespace == value) return;
+                    this.linespace = value
                     break;
                 default:
                     return;
             }
-            this.updateTextImage()
+            this.updateImageSprite()
         }
     
         /**
-         * clear gap space
-         * at renfont Sprite
+         * clear gap space at renfont Sprite
          */
         //%blockid=renfont_Sprite_setdefaultlinespace
         //%block=" $this set $gaptype to default value"
@@ -1001,17 +1010,17 @@ namespace Renfont {
         public setDefaultGap(gaptype: spacetype) {
             switch (gaptype) {
                 case 1:
-                    if (this.spacew == undefined) return; 
-                    this.spacew = undefined
+                    if (this.letterspace == undefined) return; 
+                    this.letterspace = undefined
                     break;
                 case 2:
-                    if (this.lineh == undefined) return;
-                    this.lineh = undefined
+                    if (this.linespace == undefined) return;
+                    this.linespace = undefined
                     break;
                 default:
                     return;
             }
-            this.updateTextImage()
+            this.updateImageSprite()
         }
     
         /**
@@ -1019,40 +1028,40 @@ namespace Renfont {
          * to renfont Sprite
          */
         //%blockid=renfont_Sprite_settextdata
-        //%block=" $this set text to $Text"
+        //%block=" $this set text to $text"
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=20
-        public setText(Text: string) {
-            if (this.stxt == Text) return;
-            this.stxt = Text
-            this.updateTextImage()
+        public settext(text: string) {
+            if (this.txt == text) return;
+            this.txt = text
+            this.updateImageSprite()
         }
 
         /**
          * set text color index
          * to renfont Sprite
          */
-        //%blockid=renfont_Sprite_settextcolor
-        //%block=" $this set $colortexttype to $ncolor"
+        //%blockid=renfont_Sprite_settexsolidColoror
+        //%block=" $this set $colortexttype to $subColoror"
         //%this.shadow=variables_get this.defl=myRenfont
-        //%ncolor.shadow=colorindexpicker
+        //%subColoror.shadow=colorindexpicker
         //%group="Sprite mode"
         //%weight=6
-        public setTextColor(colortexttype: colortype, ncolor: number = 0) {
+        public settexsolidColoror(colortexttype: colortype, subColoror: number = 0) {
             switch (colortexttype) {
                 case 1:
-                    if (this.scol == ncolor) return;
-                    this.scol = ncolor
+                    if (this.solidColor == subColoror) return;
+                    this.solidColor = subColoror
                     break;
                 case 2:
-                    if (this.bcol == ncolor) return;
-                    this.bcol = ncolor
+                    if (this.outlineColor == subColoror) return;
+                    this.outlineColor = subColoror
                     break;
                 default:
                     return;
             }
-            this.updateTextImage()
+            this.updateImageSprite()
         }
     
         /**
@@ -1060,30 +1069,30 @@ namespace Renfont {
          * to renfont Sprite
          */
         //%blockid=renfont_Sprite_settableid
-        //%block=" $this set Table id to $Tid"
-        //%Tid.shadow=renfont_tablenameshadow
+        //%block=" $this set Table id to $tableKey"
+        //%tableKey.shadow=renfont_tablenameshadow
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=3
-        public setTableId(Tid: string) {
-            if (this.stid == Tid) return;
-            this.stid = Tid
-            this.updateTextImage()
+        public setTableId(tableKey: string) {
+            if (this.tableKey == tableKey) return;
+            this.tableKey = tableKey
+            this.updateImageSprite()
         }
     
         /**
          * set page width
          * to renfont Sprite
          */
-        //%blockid=renfont_Sprite_setpagewidth
-        //%block=" $this set page width to $PageW"
+        //%blockid=renfont_Sprite_setpageWidthidth
+        //%block=" $this set page width to $pageWidth"
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=4
-        public setPageWidth(PageW: number = 0) {
-            if (this.pagew == PageW) return;
-            this.pagew = PageW
-            this.updateTextImage()
+        public setpageWidthidth(pageWidth: number = 0) {
+            if (this.pageWidth == pageWidth) return;
+            this.pageWidth = pageWidth
+            this.updateImageSprite()
         }
 
         /**
@@ -1091,61 +1100,62 @@ namespace Renfont {
          * from renfont Sprite
          */
         //%blockid=renfont_Sprite_playanimatiom
-        //%block=" $this get animation play for (ms) $secval in $delaymode||and paused $pausev"
-        //%secval.defl=100
+        //%block=" $this get animation play for (ms) $msecval in $delaymode||and paused $pausev"
+        //%msecval.defl=100
         //%pausev.shadow=toggleYesNo
         //%this.shadow=variables_get this.defl=myRenfont
         //%group="Sprite mode"
         //%weight=2
-        public getAnimPlay(secval: number, delaymode: delaytype, pausev: boolean = false) {
+        public getAnimPlay(msecval: number, delaymode: delaytype, pausev: boolean = false) {
             if (this.anim) return;
             this.anim = true
-            this.scval = 0
-            let umsec = 0, lensec = 0;
-            if (this.sdim) {
-                this.imgarr = stampStrArrToDialog(
-                    this.sdim, 
-                    this.stxt, 
-                    this.pagew, 
-                    this.stid, 
-                    this.scol, 
-                    this.bcol, 
+            this.msec = 0
+            let umsec: number, lensec: number;
+            if (this.dialogImage) {
+                this.saveImageArray = stampStrArrToDialog(
+                    this.dialogImage, 
+                    this.txt, 
+                    this.pageWidth, 
+                    this.tableKey, 
+                    this.solidColor, 
+                    this.outlineColor, 
                     this.salg, 
-                    this.spacew, 
-                    this.lineh
+                    this.letterspace, 
+                    this.linespace
                 )
             } else {
-                this.imgarr = setTextImageArray(
-                    this.stxt, 
-                    this.pagew, 
-                    this.stid, 
-                    this.scol, 
-                    this.bcol, 
+                this.saveImageArray = setTextImageArray(
+                    this.txt, 
+                    this.pageWidth, 
+                    this.tableKey, 
+                    this.solidColor, 
+                    this.outlineColor, 
                     this.salg, 
-                    this.spacew, 
-                    this.lineh
+                    this.letterspace, 
+                    this.linespace
                 )
             }
             switch (delaymode) {
                 case 1:
-                    this.scval = secval - 1
-                    umsec = this.scval
-                    lensec = this.scval * this.imgarr.length
+                    this.msec = msecval - 1
+                    umsec = this.msec
+                    lensec = this.msec * this.saveImageArray.length
                     break;
                 case 2:
-                    this.scval = secval / this.imgarr.length
-                    umsec = secval - 2
-                    lensec = secval - 2
+                    this.msec = Math.floor(msecval / this.saveImageArray.length)
+                    umsec = msecval - 1
+                    lensec = msecval - 1
                     break;
                 default:
                     return;
             }
-            animation.runImageAnimation(this, this.imgarr, this.scval, false)
-            setTimeout(function () {
+            animation.runImageAnimation(this, this.saveImageArray, this.msec, false)
+            let unitTimeout = setTimeout(function () {
                 this.anim = false
-                this.updateTextImage()
+                this.updateImageSprite()
+                clearTimeout(unitTimeout)
             }, lensec)
-            if (pausev) pause(lensec);
+            if (pausev) pauseUntil(() => !this.anim);
         }
     
         /**
